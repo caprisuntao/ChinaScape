@@ -29,7 +29,7 @@ We chose this topic to solve the common information gap international tourists f
 ---
 
 ## 🛠️ Tech Stack & Environment
-* **Editor:** Antigravity
+* **Editor:** Antigravity/VScode
 * **Version Control:** Git / GitHub
 * **Documentation:** Markdown (.md)
 
@@ -37,5 +37,6 @@ We chose this topic to solve the common information gap international tourists f
 
 ## 📂 Repository Structure
 * `/docs`: Project documentation and research.
+* `/reports`: Weekly project reports.
 * `/src`: Source code for the ChinaScape platform.
 * `README.md`: Project overview and team information.
