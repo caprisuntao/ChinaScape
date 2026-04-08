@@ -1,0 +1,537 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#B5271A;--red-dk:#8C1C11;--red-lt:#FADBD8;--red-xlt:#FDF2F1;
+  --gold:#C9960A;--gold-lt:#FEF9E7;
+  --ink:#1C1209;--ink-md:#3D2E1E;--ink-lt:#7A6A58;--ink-xlt:#BFB5A8;
+  --paper:#FAF7F2;--paper-dk:#F2EDE4;--paper-dkr:#E8E0D4;--paper-dkst:#D9CFC0;
+  --white:#FFFFFF;
+  --r:12px;--r-sm:7px;--r-lg:18px;
+}
+#app{font-family:'DM Sans',sans-serif;background:var(--paper);min-height:700px;color:var(--ink)}
+.screen{display:none}
+.screen.active{display:block}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:0;background:var(--white);border-bottom:1px solid var(--paper-dkr);position:sticky;top:0;z-index:100}
+.topbar-logo{font-family:'Noto Serif SC',serif;font-size:20px;font-weight:700;color:var(--red);padding:0 28px;border-right:1px solid var(--paper-dkr);cursor:pointer;height:56px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.topbar-logo span{font-size:13px;color:var(--ink-lt);font-family:'DM Sans',sans-serif;font-weight:400}
+.topbar-nav{display:flex;align-items:center;gap:0;flex:1;padding:0 8px}
+.nav-item{padding:0 18px;height:56px;display:flex;align-items:center;font-size:13px;font-weight:500;color:var(--ink-md);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.nav-item:hover{color:var(--red)}
+.nav-item.active{color:var(--red);border-bottom-color:var(--red)}
+.topbar-right{display:flex;align-items:center;gap:10px;padding:0 24px;margin-left:auto}
+.search-wrap{display:flex;align-items:center;background:var(--paper);border:1px solid var(--paper-dkr);border-radius:28px;overflow:hidden;height:36px}
+.search-wrap input{border:none;outline:none;background:transparent;padding:0 14px;font-size:13px;color:var(--ink);font-family:'DM Sans',sans-serif;width:200px}
+.search-wrap input::placeholder{color:var(--ink-xlt)}
+.search-wrap button{background:var(--red);color:#fff;border:none;padding:0 16px;height:36px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:0 28px 28px 0}
+.profile-btn{display:flex;align-items:center;gap:8px;background:var(--red-xlt);border:1px solid var(--red-lt);border-radius:28px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:500;color:var(--red-dk);transition:all .2s}
+.profile-btn:hover{background:var(--red-lt)}
+.profile-av{width:26px;height:26px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-family:'Noto Serif SC',serif;font-weight:700}
+
+/* HOME */
+.hero-band{background:var(--red);padding:52px 60px;display:flex;align-items:center;gap:60px}
+.hero-text{flex:1;color:#fff}
+.hero-title{font-family:'Noto Serif SC',serif;font-size:48px;font-weight:700;line-height:1.1;letter-spacing:-1px}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.75);margin-top:12px;line-height:1.6;max-width:420px}
+.hero-badges{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.hero-badge{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+.hero-badge:hover{background:rgba(255,255,255,.25)}
+.hero-img{width:380px;height:220px;border-radius:var(--r-lg);overflow:hidden;flex-shrink:0}
+.hero-img img{width:100%;height:100%;object-fit:cover}
+
+.home-body{display:grid;grid-template-columns:1fr 300px;gap:28px;padding:32px 60px;align-items:start}
+.home-main{}
+.home-side{}
+
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.sec-title{font-family:'Noto Serif SC',serif;font-size:20px;font-weight:700;color:var(--ink)}
+.sec-more{font-size:13px;color:var(--red);cursor:pointer;font-weight:500}
+
+.attractions-grid {
+  display: grid;
+  /* This ensures cards stay a reasonable size and wrap automatically */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+.acard{background:var(--white);border:1px solid var(--paper-dkr);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s}
+.acard:hover{border-color:var(--red);transform:translateY(-3px);box-shadow:0 8px 24px rgba(181,39,26,.1)}
+.acard-img{width:100%;height:140px;overflow:hidden;position:relative}
+.acard-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.acard:hover .acard-img img{transform:scale(1.05)}
+.acard-body{padding:12px 14px}
+.acard-name{font-size:14px;font-weight:600;color:var(--ink)}
+.acard-loc{font-size:12px;color:var(--ink-lt);margin-top:3px}
+.acard-tag{display:inline-block;margin-top:7px;font-size:11px;padding:2px 9px;border-radius:10px;background:var(--red-xlt);color:var(--red-dk);font-weight:500}
+
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.qa-card{background:var(--white);border:1px solid var(--paper-dkr);border-radius:var(--r);padding:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px}
+.qa-card:hover{border-color:var(--red);transform:translateX(3px)}
+.qa-img{width:52px;height:52px;border-radius:var(--r-sm);overflow:hidden;flex-shrink:0}
+.qa-img img{width:100%;height:100%;object-fit:cover}
+.qa-label{font-size:14px;font-weight:600;color:var(--ink)}
+.qa-sub{font-size:12px;color:var(--ink-lt);margin-top:3px}
+
+.side-card{background:var(--white);border:1px solid var(--paper-dkr);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+.side-card-head{padding:14px 18px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--ink);border-bottom:1px solid var(--paper-dk)}
+.side-item{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--paper-dk);cursor:pointer;transition:background .15s}
+.side-item:last-child{border-bottom:none}
+.side-item:hover{background:var(--paper)}
+.side-item-img{width:44px;height:44px;border-radius:var(--r-sm);overflow:hidden;flex-shrink:0}
+.side-item-img img{width:100%;height:100%;object-fit:cover}
+.side-item-name{font-size:13px;font-weight:500;color:var(--ink);flex:1}
+.side-item-meta{font-size:11px;color:var(--ink-lt)}
+
+/* DETAIL */
+.detail-hero{width:100%;height:340px;position:relative;overflow:hidden}
+.detail-hero img{width:100%;height:100%;object-fit:cover}
+.detail-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(28,18,9,.7) 0%,transparent 50%)}
+.detail-hero-text{position:absolute;bottom:0;left:0;right:0;padding:28px 48px;color:#fff}
+.detail-hero-name{font-family:'Noto Serif SC',serif;font-size:36px;font-weight:700;line-height:1.1}
+.detail-hero-cn{font-size:14px;color:rgba(255,255,255,.8);margin-top:4px}
+
+.detail-bar{display:flex;align-items:center;gap:0;background:var(--white);border-bottom:1px solid var(--paper-dkr);padding:0 48px}
+.detail-action{padding:16px 20px;font-size:13px;font-weight:500;color:var(--ink-md);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.detail-action:hover{color:var(--red)}
+.detail-save{margin-left:auto;background:var(--red);color:#fff;border:none;border-radius:24px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.detail-save:hover{background:var(--red-dk)}
+.detail-save.saved{background:var(--ink-md)}
+
+.detail-body{display:grid;grid-template-columns:1fr 320px;gap:32px;padding:32px 48px}
+.detail-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.dtag{font-size:12px;padding:4px 12px;border-radius:12px;font-weight:500}
+.dtag-cat{background:var(--red-xlt);color:var(--red-dk)}
+.dtag-hrs{background:var(--gold-lt);color:#7B6000}
+.dtag-pass{background:var(--paper-dkr);color:var(--ink-md)}
+.detail-desc{font-size:15px;line-height:1.85;color:var(--ink-md)}
+.detail-addr{font-size:13px;color:var(--ink-lt);margin-top:16px;padding-top:16px;border-top:1px solid var(--paper-dkr)}
+
+.info-card{background:var(--white);border:1px solid var(--paper-dkr);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.info-card-head{padding:12px 16px;font-size:13px;font-weight:600;color:var(--ink);background:var(--paper);border-bottom:1px solid var(--paper-dkr)}
+.info-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--paper-dk);font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-label{color:var(--ink-lt)}
+.info-val{color:var(--ink);font-weight:500}
+.nearby-img{width:100%;height:120px;border-radius:var(--r-sm);overflow:hidden;margin-bottom:12px}
+.nearby-img img{width:100%;height:100%;object-fit:cover}
+
+/* ITINERARY */
+.itin-page{display:grid;grid-template-columns:1fr 280px;gap:24px;padding:28px 48px}
+.itin-main{}
+.itin-side{}
+
+.day-card{background:var(--white);border:1px solid var(--paper-dkr);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+.day-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--red);color:#fff}
+.day-head h3{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700}
+.day-add{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;color:#fff;transition:all .2s}
+.day-add:hover{background:rgba(255,255,255,.2)}
+.act-row{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--paper-dk);transition:background .15s;cursor:pointer}
+.act-row:last-child{border-bottom:none}
+.act-row:hover{background:var(--paper)}
+.act-drag{color:var(--ink-xlt);font-size:14px;cursor:grab}
+.act-img{width:40px;height:40px;border-radius:6px;overflow:hidden;flex-shrink:0}
+.act-img img{width:100%;height:100%;object-fit:cover}
+.act-name{flex:1;font-size:13px;font-weight:500;color:var(--ink)}
+.act-time{font-size:12px;color:var(--ink-lt)}
+
+.cost-card{background:var(--white);border:1px solid var(--paper-dkr);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.cost-title{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:14px}
+.cost-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--paper-dk);font-size:13px}
+.cost-row:last-child{border-bottom:none;font-weight:600;color:var(--red);padding-top:12px;margin-top:4px}
+.cost-label{color:var(--ink-lt)}
+
+.itin-btn{background:var(--white);border:1px solid var(--paper-dkr);border-radius:24px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .2s;margin-bottom:10px}
+.itin-btn:hover{border-color:var(--red);color:var(--red)}
+.map-btn{background:var(--paper-dk);border:1px solid var(--paper-dkr);border-radius:24px;padding:12px 18px;text-align:center;font-size:13px;font-weight:600;color:var(--ink-md);cursor:pointer;transition:all .2s}
+.map-btn:hover{background:var(--paper-dkr)}
+
+/* CULTURAL */
+.cultural-page{padding:32px 60px}
+.cultural-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:860px;margin:0 auto}
+.guide-card{background:var(--white);border:1px solid var(--paper-dkr);border-radius:var(--r);overflow:hidden;cursor:pointer;display:flex;align-items:stretch;transition:all .2s}
+.guide-card:hover{border-color:var(--red);transform:translateY(-2px);box-shadow:0 6px 20px rgba(181,39,26,.08)}
+.guide-img{width:120px;flex-shrink:0;overflow:hidden}
+.guide-img img{width:100%;height:100%;object-fit:cover}
+.guide-text{padding:20px 22px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.guide-name{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:.3px}
+.guide-sub{font-size:12px;color:var(--ink-lt);margin-top:5px;line-height:1.5}
+.guide-arrow{display:flex;align-items:center;padding:0 16px;color:var(--ink-xlt);font-size:20px;font-weight:700}
+
+/* PROFILE */
+.profile-page{padding:40px 60px;display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start}
+.profile-sidebar{}
+.profile-av-lg{width:100px;height:100px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:38px;color:#fff;font-weight:700;margin:0 auto 14px;border:4px solid var(--paper-dkr)}
+.profile-name{text-align:center;font-family:'Noto Serif SC',serif;font-size:20px;font-weight:700;color:var(--ink)}
+.profile-sub{text-align:center;font-size:13px;color:var(--ink-lt);margin-top:4px}
+.profile-stats{display:flex;gap:0;margin-top:20px;border:1px solid var(--paper-dkr);border-radius:var(--r);overflow:hidden;background:var(--white)}
+.pstat{flex:1;padding:14px 0;text-align:center;border-right:1px solid var(--paper-dkr)}
+.pstat:last-child{border-right:none}
+.pstat-n{font-size:20px;font-weight:700;color:var(--red)}
+.pstat-l{font-size:11px;color:var(--ink-lt);margin-top:2px}
+
+.profile-main{}
+.prof-card{background:var(--white);border:1px solid var(--paper-dkr);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.prof-card-head{padding:16px 20px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--ink);border-bottom:1px solid var(--paper-dk);display:flex;align-items:center;justify-content:space-between}
+.prof-card-head span{font-size:12px;color:var(--red);font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer}
+.saved-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--paper-dk);cursor:pointer;transition:background .15s}
+.saved-row:last-child{border-bottom:none}
+.saved-row:hover{background:var(--paper)}
+.saved-img{width:52px;height:52px;border-radius:8px;overflow:hidden;flex-shrink:0}
+.saved-img img{width:100%;height:100%;object-fit:cover}
+.saved-name{flex:1;font-size:14px;font-weight:500;color:var(--ink)}
+.saved-meta{font-size:12px;color:var(--ink-lt);margin-top:2px}
+.saved-dl{font-size:16px;color:var(--ink-lt);padding:4px 8px;cursor:pointer;transition:color .2s}
+.saved-dl:hover{color:var(--red)}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;font-weight:500;transition:transform .3s;z-index:999;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+
+<div id="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo"  onclick="goHome()" >ChinaScape <span>中国旅游</span></div>
+  <div class="topbar-nav">
+    <div class="nav-item active" id="nav-home" onclick="goHome()">Home</div>
+    <div class="nav-item" id="nav-itin" onclick="showScreen('itinerary')">Itinerary</div>
+    <div class="nav-item" id="nav-cult" onclick="showScreen('cultural')">Cultural Guide</div>
+    <div class="nav-item" onclick="toast('Explore coming soon!')">Explore</div>
+  </div>
+  <div class="topbar-right">
+    <div class="search-wrap">
+      <input type="text" placeholder="Search attractions..." />
+      <button>Search</button>
+    </div>
+    <div class="profile-btn" onclick="showScreen('profile')">
+      <div class="profile-av">旅</div>
+      My Profile
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="hero-band">
+    <div class="hero-text">
+      <div class="hero-title">Discover China,<br>Your Way</div>
+      <div class="hero-sub">From the Great Wall to misty karst mountains — plan your perfect journey through China's most iconic destinations.</div>
+      <div class="hero-badges">
+        <div class="hero-badge">Beijing</div>
+        <div class="hero-badge">Shanghai</div>
+        <div class="hero-badge">Xi'an</div>
+        <div class="hero-badge">Guilin</div>
+        <div class="hero-badge">Chengdu</div>
+      </div>
+    </div>
+    <div class="hero-img">
+      <img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=760&q=80" alt="Great Wall of China" onerror="this.style.background='#8C1C11';this.alt=''" />
+    </div>
+  </div>
+
+  <div class="home-body">
+    <div class="home-main">
+      <div class="qa-grid">
+        <div class="qa-card" onclick="showScreen('itinerary')">
+          <div class="qa-img">
+            <img src="https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=200&q=80" alt="Itinerary" onerror="this.style.background='#C0392B'" />
+          </div>
+          <div>
+            <div class="qa-label">Itinerary Planner</div>
+            <div class="qa-sub">Build your day-by-day journey</div>
+          </div>
+        </div>
+        <div class="qa-card" onclick="showScreen('cultural')">
+          <div class="qa-img">
+            <img src="https://images.unsplash.com/photo-1537819191377-d3305ffddce4?w=200&q=80" alt="Cultural Guide" onerror="this.style.background='#C0392B'" />
+          </div>
+          <div>
+            <div class="qa-label">Cultural Guide</div>
+            <div class="qa-sub">Etiquette, food & language</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-head">
+        <div class="sec-title">Featured Attractions</div>
+        <div class="sec-more">View all →</div>
+      </div>
+      <div class="attractions-grid">
+        <div class="acard" onclick="showDetail(0)">
+          <div class="acard-img"><img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=600&q=80" alt="Great Wall" onerror="this.style.background='#BDC3C7'" /></div>
+          <div class="acard-body"><div class="acard-name">Great Wall of China</div><div class="acard-loc">Badaling, Beijing</div><div class="acard-tag">Historical</div></div>
+        </div>
+        <div class="acard" onclick="showDetail(1)">
+          <div class="acard-img"><img src="https://images.unsplash.com/photo-1577706881850-bf7c7d8906a5?w=600&q=80" alt="Forbidden City" onerror="this.style.background='#BDC3C7'" /></div>
+          <div class="acard-body"><div class="acard-name">Forbidden City</div><div class="acard-loc">Dongcheng, Beijing</div><div class="acard-tag">Palace</div></div>
+        </div>
+        <div class="acard" onclick="showDetail(2)">
+          <div class="acard-img"><img src="https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=600&q=80" alt="Giant Panda" onerror="this.style.background='#BDC3C7'" /></div>
+          <div class="acard-body"><div class="acard-name">Chengdu Pandas</div><div class="acard-loc">Chengdu, Sichuan</div><div class="acard-tag">Wildlife</div></div>
+        </div>
+        <div class="acard" onclick="showDetail(3)">
+          <div class="acard-img"><img src="https://images.unsplash.com/photo-1636964886908-7b28097bc746?w=600&q=80" alt="Li River" onerror="this.style.background='#BDC3C7'" /></div>
+          <div class="acard-body"><div class="acard-name">Li River Cruise</div><div class="acard-loc">Guilin, Guangxi</div><div class="acard-tag">Nature</div></div>
+        </div>
+        <div class="acard" onclick="showDetail(4)">
+          <div class="acard-img"><img src="https://images.unsplash.com/photo-1552598442-d8a9fe79eb11?w=600&q=80" alt="Terracotta Army" onerror="this.style.background='#BDC3C7'" /></div>
+          <div class="acard-body"><div class="acard-name">Terracotta Army</div><div class="acard-loc">Xi'an, Shaanxi</div><div class="acard-tag">Archaeology</div></div>
+        </div>
+        <div class="acard" onclick="showDetail(5)">
+          <div class="acard-img"><img src="https://images.unsplash.com/photo-1640100385267-4b935d8ef86c?w=600&q=80" alt="West Lake" onerror="this.style.background='#BDC3C7'" /></div>
+          <div class="acard-body"><div class="acard-name">West Lake</div><div class="acard-loc">Hangzhou, Zhejiang</div><div class="acard-tag">Nature</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-side">
+      <div class="side-card">
+        <div class="side-card-head">Trending This Season</div>
+        <div class="side-item" onclick="showDetail(5)">
+          <div class="side-item-img"><img src="https://images.unsplash.com/photo-1640100385267-4b935d8ef86c?w=120&q=70" alt="West Lake" onerror="this.style.background='#ccc'" /></div>
+          <div><div class="side-item-name">West Lake</div><div class="side-item-meta">Hangzhou — Spring blossoms</div></div>
+        </div>
+        <div class="side-item" onclick="showDetail(0)">
+          <div class="side-item-img"><img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70" alt="Great Wall" onerror="this.style.background='#ccc'" /></div>
+          <div><div class="side-item-name">Great Wall</div><div class="side-item-meta">Beijing — Best in autumn</div></div>
+        </div>
+        <div class="side-item" onclick="showDetail(3)">
+          <div class="side-item-img"><img src="https://images.unsplash.com/photo-1636964886908-7b28097bc746?w=120&q=70" alt="Li River" onerror="this.style.background='#ccc'" /></div>
+          <div><div class="side-item-name">Li River</div><div class="side-item-meta">Guilin — Misty mornings</div></div>
+        </div>
+      </div>
+      <div class="side-card">
+        <div class="side-card-head">Travel Tips</div>
+        <div class="side-item"><div><div class="side-item-name">Visa Requirements</div><div class="side-item-meta">Tourist L-visa guide</div></div></div>
+        <div class="side-item"><div><div class="side-item-name">Best Time to Visit</div><div class="side-item-meta">Spring & autumn ideal</div></div></div>
+        <div class="side-item"><div><div class="side-item-name">Currency & Payments</div><div class="side-item-meta">WeChat Pay tips</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div class="screen" id="screen-detail">
+  <div class="detail-hero">
+    <img id="dh-img" src="" alt="" />
+    <div class="detail-hero-overlay"></div>
+    <div class="detail-hero-text">
+      <div class="detail-hero-name" id="dh-name"></div>
+      <div class="detail-hero-cn" id="dh-cn"></div>
+    </div>
+  </div>
+  <div class="detail-bar">
+    <div class="detail-action" onclick="goHome()">← Back</div>
+    <div class="detail-action">Gallery</div>
+    <div class="detail-action">Ticketing</div>
+    <button class="detail-save" id="dsave-btn" onclick="toggleSave()">Save to Profile</button>
+  </div>
+  <div class="detail-body">
+    <div>
+      <div class="detail-tags">
+        <span class="dtag dtag-cat" id="d-cat"></span>
+        <span class="dtag dtag-hrs" id="d-hrs"></span>
+        <span class="dtag dtag-pass">Passport required for entry</span>
+      </div>
+      <div class="detail-desc" id="d-desc"></div>
+      <div class="detail-addr" id="d-addr"></div>
+    </div>
+    <div>
+      <div class="info-card">
+        <div class="info-card-head">Visit Info</div>
+        <div class="info-row"><span class="info-label">Category</span><span class="info-val" id="d-cat2"></span></div>
+        <div class="info-row"><span class="info-label">Hours</span><span class="info-val" id="d-hrs2"></span></div>
+        <div class="info-row"><span class="info-label">Entry</span><span class="info-val">ID/Passport required</span></div>
+        <div class="info-row"><span class="info-label">Best season</span><span class="info-val">Spring & Autumn</span></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-head">Nearby</div>
+        <div class="nearby-img"><img id="d-nearby-img" src="" alt="nearby" onerror="this.style.background='#eee'" /></div>
+        <div style="padding:0 16px 14px;font-size:13px;color:var(--ink-lt)" id="d-nearby-txt"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ITINERARY -->
+<div class="screen" id="screen-itinerary">
+  <div class="detail-bar" style="padding:0 32px">
+    <div class="detail-action" onclick="goHome()">← Back</div>
+    <div style="padding:14px 0;font-family:'Noto Serif SC',serif;font-size:17px;font-weight:700;color:var(--ink)">My Itinerary</div>
+    <button class="detail-save" onclick="toast('Itinerary saved!')">Save</button>
+  </div>
+  <div class="itin-page">
+    <div class="itin-main">
+      <div class="day-card">
+        <div class="day-head"><h3>Day 1 — Beijing</h3><div class="day-add" onclick="toast('Add activity')">+</div></div>
+        <div class="act-row"><span class="act-drag">☰</span><div class="act-img"><img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70" alt="" onerror="this.style.background='#ccc'" /></div><span class="act-name">Great Wall (Badaling)</span><span class="act-time">8:00 AM</span></div>
+        <div class="act-row"><span class="act-drag">☰</span><div class="act-img"><img src="https://images.unsplash.com/photo-1577706881850-bf7c7d8906a5?w=120&q=70" alt="" onerror="this.style.background='#ccc'" /></div><span class="act-name">Forbidden City</span><span class="act-time">1:30 PM</span></div>
+        <div class="act-row"><span class="act-drag">☰</span><div class="act-img"><img src="https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=120&q=70" alt="" onerror="this.style.background='#ccc'" /></div><span class="act-name">Temple of Heaven</span><span class="act-time">4:30 PM</span></div>
+      </div>
+      <div class="day-card">
+        <div class="day-head"><h3>Day 2 — Xi'an</h3><div class="day-add" onclick="toast('Add activity')">+</div></div>
+        <div class="act-row"><span class="act-drag">☰</span><div class="act-img"><img src="https://images.unsplash.com/photo-1552598442-d8a9fe79eb11?w=120&q=70" alt="" onerror="this.style.background='#ccc'" /></div><span class="act-name">Terracotta Army</span><span class="act-time">9:00 AM</span></div>
+        <div class="act-row"><span class="act-drag">☰</span><div class="act-img"><img src="https://images.unsplash.com/photo-1537819191377-d3305ffddce4?w=120&q=70" alt="" onerror="this.style.background='#ccc'" /></div><span class="act-name">Muslim Quarter</span><span class="act-time">2:00 PM</span></div>
+        <div class="act-row"><span class="act-drag">☰</span><div class="act-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1XHsMhMF_aACgzQ707iH9QXcgf7XzdrFPHg&s?w=120&q=70" alt="" onerror="this.style.background='#ccc'" /></div><span class="act-name">Ancient City Wall</span><span class="act-time">5:00 PM</span></div>
+      </div>
+    </div>
+    <div class="itin-side">
+      <div class="cost-card">
+        <div class="cost-title">Cost Estimator</div>
+        <div class="cost-row"><span class="cost-label">Transport</span><span>¥420</span></div>
+        <div class="cost-row"><span class="cost-label">Tickets</span><span>¥310</span></div>
+        <div class="cost-row"><span class="cost-label">Food (est.)</span><span>¥200</span></div>
+        <div class="cost-row"><span class="cost-label">Total</span><span>¥930</span></div>
+      </div>
+      <div class="itin-btn" onclick="toast('Loading 1-Day plan...')"><span>1-Day Itinerary</span><span>›</span></div>
+      <div class="itin-btn" onclick="toast('Loading 2-Day plan...')"><span>2-Day Itinerary</span><span>›</span></div>
+      <div class="map-btn" onclick="toast('Opening map view...')">Map View</div>
+    </div>
+  </div>
+</div>
+
+<!-- CULTURAL GUIDE -->
+<div class="screen" id="screen-cultural">
+  <div class="detail-bar" style="padding:0 32px">
+    <div class="detail-action" onclick="goHome()">← Back</div>
+    <div style="padding:14px 0;font-family:'Noto Serif SC',serif;font-size:17px;font-weight:700;color:var(--ink)">Cultural Guide</div>
+  </div>
+  <div class="cultural-page">
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="font-family:'Noto Serif SC',serif;font-size:28px;font-weight:700;color:var(--ink)">Know Before You Go</div>
+      <div style="font-size:14px;color:var(--ink-lt);margin-top:8px">Essential cultural knowledge for your China journey</div>
+    </div>
+    <div class="cultural-grid">
+      <div class="guide-card" onclick="toast('Opening Etiquette Tips...')">
+        <div class="guide-img"><img src="https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=240&q=80" alt="Etiquette" onerror="this.style.background='#E8E0D4'" /></div>
+        <div class="guide-text"><div class="guide-name">Etiquette Tips</div><div class="guide-sub">Customs, manners, and what to avoid when visiting China</div></div>
+        <div class="guide-arrow">›</div>
+      </div>
+      <div class="guide-card" onclick="toast('Opening Must-Try Food...')">
+        <div class="guide-img"><img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=240&q=80" alt="Food" onerror="this.style.background='#E8E0D4'" /></div>
+        <div class="guide-text"><div class="guide-name">Must-Try Food</div><div class="guide-sub">Local dishes and the best nearby restaurants to try</div></div>
+        <div class="guide-arrow">›</div>
+      </div>
+      <div class="guide-card" onclick="toast('Opening Language Flashcards...')">
+        <div class="guide-img"><img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=240&q=80" alt="Language" onerror="this.style.background='#E8E0D4'" /></div>
+        <div class="guide-text"><div class="guide-name">Language Flashcards</div><div class="guide-sub">Common Mandarin phrases for everyday travel use</div></div>
+        <div class="guide-arrow">›</div>
+      </div>
+      <div class="guide-card" onclick="toast('Opening Historical Context...')">
+        <div class="guide-img"><img src="https://images.unsplash.com/photo-1537819191377-d3305ffddce4?w=200&q=80" alt="History" onerror="this.style.background='#E8E0D4'" /></div>
+        <div class="guide-text"><div class="guide-name">Historical Context</div><div class="guide-sub">Short articles — learn the "why" behind each spot</div></div>
+        <div class="guide-arrow">›</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="screen" id="screen-profile">
+  <div class="detail-bar" style="padding:0 32px">
+    <div class="detail-action" onclick="goHome()">← Back</div>
+    <div style="padding:14px 0;font-family:'Noto Serif SC',serif;font-size:17px;font-weight:700;color:var(--ink)">My Profile</div>
+  </div>
+  <div class="profile-page">
+    <div class="profile-sidebar">
+      <div class="profile-av-lg">旅</div>
+      <div class="profile-name">Explorer</div>
+      <div class="profile-sub">China travel enthusiast</div>
+      <div class="profile-stats">
+        <div class="pstat"><div class="pstat-n">2</div><div class="pstat-l">Itineraries</div></div>
+        <div class="pstat"><div class="pstat-n" id="saved-count">2</div><div class="pstat-l">Saved</div></div>
+      </div>
+    </div>
+    <div class="profile-main">
+      <div class="prof-card">
+        <div class="prof-card-head">Saved Itineraries <span onclick="toast('Edit itineraries')">Edit</span></div>
+        <div class="saved-row">
+          <div class="saved-img"><img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70" alt="" onerror="this.style.background='#ccc'" /></div>
+          <div style="flex:1"><div class="saved-name">Beijing 2-Day Trip</div><div class="saved-meta">3 stops · ¥930 est.</div></div>
+          <div class="saved-dl" onclick="toast('Downloading...')">⬇</div>
+        </div>
+        <div class="saved-row">
+          <div class="saved-img"><img src="https://images.unsplash.com/photo-1552598442-d8a9fe79eb11?w=120&q=70" alt="" onerror="this.style.background='#ccc'" /></div>
+          <div style="flex:1"><div class="saved-name">Xi'an Explorer Route</div><div class="saved-meta">3 stops · ¥640 est.</div></div>
+          <div class="saved-dl" onclick="toast('Downloading...')">⬇</div>
+        </div>
+      </div>
+      <div class="prof-card">
+        <div class="prof-card-head">Saved Spots <span onclick="toast('Edit spots')">Edit</span></div>
+        <div class="saved-row" onclick="showDetail(0)">
+          <div class="saved-img"><img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70" alt="" onerror="this.style.background='#ccc'" /></div>
+          <div><div class="saved-name">Great Wall of China</div><div class="saved-meta">Badaling, Beijing</div></div>
+        </div>
+        <div class="saved-row" onclick="showDetail(1)">
+          <div class="saved-img"><img src="https://images.unsplash.com/photo-1577706881850-bf7c7d8906a5?w=120&q=70" alt="" onerror="this.style.background='#ccc'" /></div>
+          <div><div class="saved-name">Forbidden City</div><div class="saved-meta">Dongcheng, Beijing</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="toast" id="toastEl"></div>
+
+<script>
+const attrs = [
+  {name:"Great Wall of China",cn:"长城 (Chángchéng)",cat:"Historical",hrs:"7:30 AM – 6:00 PM",addr:"Badaling District, Beijing · Passport required for entry",img:"https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1200&q=85",nearby:"https://images.unsplash.com/photo-1577706881850-bf7c7d8906a5?w=600&q=75",nbTxt:"Forbidden City — 80 km away, ideal next stop",desc:"The Great Wall of China is one of history's most extraordinary architectural achievements, stretching over 21,000 km. The Badaling section — 80 km north of Beijing — offers restored battlements, sweeping mountain panoramas, and cable-car access. Best visited at dawn before crowds arrive."},
+  {name:"Forbidden City",cn:"紫禁城 (Zǐjìnchéng)",cat:"Palace",hrs:"8:30 AM – 5:00 PM",addr:"4 Jingshan Front St, Dongcheng, Beijing · Passport required",img:"https://images.unsplash.com/photo-1577706881850-bf7c7d8906a5?w=1200&q=85",nearby:"https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=600&q=75",nbTxt:"Great Wall — combine for a classic Beijing day",desc:"The Forbidden City served as imperial palace for 24 emperors across the Ming and Qing dynasties. Spanning 72 hectares with 9,999 rooms, it holds the world's largest collection of ancient wooden structures. Now the Palace Museum, it houses over one million imperial artifacts."},
+  {name:"Chengdu Pandas",cn:"成都大熊猫繁育研究基地",cat:"Wildlife",hrs:"7:30 AM – 6:00 PM",addr:"Panda Ave, Chenghua District, Chengdu, Sichuan",img:"https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=1200&q=85",nearby:"https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=75",nbTxt:"Jinli Ancient Street — authentic Sichuan food nearby",desc:"The Chengdu Research Base of Giant Panda Breeding is home to over 80 giant pandas and conducts vital conservation research. Morning visits — before 10 AM — are best when pandas are most active and playfully tumbling at feeding time. Volunteer programs offer intimate encounters."},
+  {name:"Li River Cruise",cn:"漓江 (Lí Jiāng)",cat:"Nature",hrs:"Cruises 9:00 AM – 4:00 PM",addr:"Guilin Pier, Guilin, Guangxi Zhuang Autonomous Region",img:"https://images.unsplash.com/photo-1636964886908-7b28097bc746?w=1200&q=85",nearby:"https://images.unsplash.com/photo-1640100385267-4b935d8ef86c?w=600&q=75",nbTxt:"West Lake — another stunning natural landmark",desc:"The 83-km Li River winds through some of China's most dramatic karst scenery — vertical limestone peaks, bamboo groves, and fishing villages straight from an ink painting. This landscape graces China's 20-yuan banknote. The Guilin-to-Yangshuo cruise takes 4–5 scenic hours."},
+  {name:"Terracotta Army",cn:"兵马俑 (Bīngmǎyǒng)",cat:"Archaeology",hrs:"8:30 AM – 6:00 PM",addr:"Lintong District, Xi'an, Shaanxi Province · Passport required",img:"https://images.unsplash.com/photo-1552598442-d8a9fe79eb11?w=1200&q=85",nearby:"https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=600&q=75",nbTxt:"Muslim Quarter — street food paradise in Xi'an",desc:"Discovered in 1974 by local farmers digging a well, the Terracotta Army guards the mausoleum of Qin Shi Huang, China's first emperor. Over 8,000 unique warrior figures, 130 chariots, and 670 horses fill three massive excavation pits — each warrior face distinct, none identical."},
+  {name:"West Lake",cn:"西湖 (Xī Hú)",cat:"Nature",hrs:"Open 24 hours · Boats 7 AM – 6 PM",addr:"West Lake Scenic Area, Hangzhou, Zhejiang Province",img:"https://images.unsplash.com/photo-1640100385267-4b935d8ef86c?w=1200&q=85",nearby:"https://images.unsplash.com/photo-1636964886908-7b28097bc746?w=600&q=75",nbTxt:"Li River — another UNESCO natural landscape",desc:"West Lake has inspired Chinese poets and painters for over a millennium. This UNESCO World Heritage Site spans 6.39 km² and features ancient causeways, pagodas, lotus-filled bays, and island pavilions. Each season transforms it — spring cherry blossoms give way to summer lotus, autumn crimson, and winter mist."}
+];
+
+let isSaved=false;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  ['nav-home','nav-itin','nav-cult'].forEach(n=>document.getElementById(n).classList.remove('active'));
+  if(id==='home')document.getElementById('nav-home').classList.add('active');
+  if(id==='itinerary')document.getElementById('nav-itin').classList.add('active');
+  if(id==='cultural')document.getElementById('nav-cult').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goHome(){showScreen('home')}
+
+function showDetail(i){
+  const a=attrs[i];
+  document.getElementById('dh-img').src=a.img;
+  document.getElementById('dh-img').alt=a.name;
+  document.getElementById('dh-name').textContent=a.name;
+  document.getElementById('dh-cn').textContent=a.cn+' · '+a.addr;
+  document.getElementById('d-cat').textContent=a.cat;
+  document.getElementById('d-hrs').textContent='Hours: '+a.hrs;
+  document.getElementById('d-desc').textContent=a.desc;
+  document.getElementById('d-addr').textContent=a.cn+' · '+a.addr;
+  document.getElementById('d-cat2').textContent=a.cat;
+  document.getElementById('d-hrs2').textContent=a.hrs;
+  document.getElementById('d-nearby-img').src=a.nearby;
+  document.getElementById('d-nearby-txt').textContent=a.nbTxt;
+  isSaved=false;
+  document.getElementById('dsave-btn').textContent='Save to Profile';
+  document.getElementById('dsave-btn').classList.remove('saved');
+  showScreen('detail');
+}
+
+function toggleSave(){
+  isSaved=!isSaved;
+  const b=document.getElementById('dsave-btn');
+  if(isSaved){b.textContent='Saved';b.classList.add('saved');toast('Added to your saved spots!')}
+  else{b.textContent='Save to Profile';b.classList.remove('saved');toast('Removed from saved spots')}
+}
+
+function toast(msg){
+  const t=document.getElementById('toastEl');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+</script>
