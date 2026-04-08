@@ -18,13 +18,13 @@ The prototype demonstrates a cohesive, culturally resonant aesthetic with a clea
 
 ## 3. Qualitative Feedback
 
-### Strengths (The "Wins")
+### Strengths
 - **Visual Identity:** Noto Serif SC for headings and a deep "Imperial Red" create an authentic, premium travel atmosphere.
 - **Localized Utility:** Displaying Chinese names (e.g., 长城 (Chángchéng)) alongside English is highly valued for on-the-ground navigation.
 - **Scannability:** Tags (Historical, Nature, Wildlife) on attraction cards help users filter information at a glance.
 - **Itinerary Detail:** Including "Passport required" warnings and clear cost summaries was appreciated.
 
-### Pain Points (The "Friction")
+### Pain Points
 - **Interactivity Gaps:** The itinerary "Add" (+) button only triggers a toast instead of opening a selection menu.
 - **Missing Search Logic:** The search bar is static — pressing Enter does not filter the attractions list.
 - **Information Hierarchy:** In the Detail View, the "Nearby" section uses large images that can distract from the primary description.
