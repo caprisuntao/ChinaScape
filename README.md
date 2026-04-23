@@ -29,7 +29,7 @@ We chose this topic to solve the common information gap international tourists f
 ---
 
 ## 🛠️ Tech Stack & Environment
-* **Editor:** Antigravity/VScode
+* **Editor:** VScode
 * **Version Control:** Git / GitHub
 * **Documentation:** Markdown (.md)
 
