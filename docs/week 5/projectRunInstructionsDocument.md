@@ -94,15 +94,6 @@ create table attraction (
   video_url text
 );
 
--- Flashcard
-create table flashcard (
-  flashcard_id uuid primary key default uuid_generate_v4(),
-  attraction_id uuid unique references attraction(attraction_id) on delete cascade,
-  chinese_name text not null,
-  chinese_address text not null,
-  pinyin text
-);
-
 -- Profile (extends Supabase auth)
 create table profile (
   user_id uuid primary key references auth.users(id) on delete cascade,
