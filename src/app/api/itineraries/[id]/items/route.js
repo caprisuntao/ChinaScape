@@ -61,3 +61,36 @@ export async function POST(request, { params }) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ data }, { status: 201 })
 }
+
+export async function PATCH(request, { params }) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+
+  const body = await request.json()
+  const { data, error } = await supabase
+    .from('itinerary_item')
+    .update(body)
+    .eq('itinerary_id', params.id)
+    .eq('user_id', user.id)
+    .select()
+    .single()
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ data })
+}
+
+export async function DELETE(request, { params }) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+
+  const { error } = await supabase
+    .from('itinerary_item')
+    .delete()
+    .eq('itinerary_id', params.id)
+    .eq('user_id', user.id)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ message: 'Deleted' })
+}
