@@ -2,7 +2,9 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client' //[cite: 9]
 import Link from 'next/link'
+import SearchBar from './Searchbar'
 import { useRouter } from 'next/navigation'
+
 
 export default function Navbar() {
   const [user, setUser] = useState(null)
@@ -47,9 +49,7 @@ export default function Navbar() {
       </div>
 
       <div className="topbar-right">
-        <div className="search-wrap">
-          <input type="text" placeholder="Search attractions..." />
-          <button>Search</button>
+        <SearchBar />
         </div>
 
         {!loading && (
@@ -76,6 +76,6 @@ export default function Navbar() {
           )
         )}
       </div>
-    </div>
   )
 }
+

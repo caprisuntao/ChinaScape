@@ -13,7 +13,6 @@ export default function RootLayout({ children }) {
         <div id="app">
           {/* Replace the old hardcoded topbar with the new component */}
           <Navbar />
-          
           {/* MAIN CONTENT */}
           <main>
             {children}

@@ -1,8 +1,30 @@
-import Link from 'next/link';
-import { attractionsData } from '@/lib/data';
+'use client'
+import { useState, useEffect } from 'react'
+import { createClient } from '@/utils/supabase/client'
+import Link from 'next/link'
 
 export default function Home() {
-  const featured = attractionsData.slice(0, 6);
+  const supabase = createClient()
+  const [featured, setFeatured] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchFeaturedAttractions()
+  }, [])
+
+  async function fetchFeaturedAttractions() {
+    setLoading(true)
+    // Fetching the top 6 attractions and joining city/category info
+    const { data, error } = await supabase
+      .from('attraction')
+      .select('*, city(name_en), category(name)')
+      .limit(6)
+
+    if (!error) {
+      setFeatured(data || [])
+    }
+    setLoading(false)
+  }
 
   return (
     <div className="screen active">
@@ -48,34 +70,43 @@ export default function Home() {
           </div>
           
           <div className="attractions-grid">
-            {featured.map(a => (
-              <Link href={`/attractions/${a.id}`} key={a.id} className="acard">
-                <div className="acard-img"><img src={a.img} alt={a.name} /></div>
-                <div className="acard-body">
-                  <div className="acard-name">{a.name}</div>
-                  <div className="acard-loc">{a.addr.split(',')[0]}</div>
-                  <div className="acard-tag">{a.cat}</div>
-                </div>
-              </Link>
-            ))}
+            {loading ? (
+              <p>Loading attractions...</p>
+            ) : featured.length === 0 ? (
+              <p>No attractions found.</p>
+            ) : (
+              featured.map(a => (
+                // Use attraction_id as defined in your schema
+                <Link href={`/attractions/${a.attraction_id}`} key={a.attraction_id} className="acard">
+                  <div className="acard-img">
+                    <img src={a.image_url || 'https://via.placeholder.com/400'} alt={a.name_en} />
+                  </div>
+                  <div className="acard-body">
+                    <div className="acard-name">{a.name_en}</div>
+                    {/* Accessing joined city data */}
+                    <div className="acard-loc">{a.city?.name_en}</div>
+                    {/* Accessing joined category data */}
+                    <div className="acard-tag">{a.category?.name}</div>
+                  </div>
+                </Link>
+              ))
+            )}
           </div>
         </div>
 
         <div className="home-side">
           <div className="side-card">
             <div className="side-card-head">Trending This Season</div>
+            {/* You can also fetch these or keep them static for now */}
             <Link href="/attractions/5" className="side-item">
               <div className="side-item-img"><img src="https://images.unsplash.com/photo-1640100385267-4b935d8ef86c?w=120&q=70" alt="West Lake" /></div>
               <div><div className="side-item-name">West Lake</div><div className="side-item-meta">Hangzhou — Spring blossoms</div></div>
             </Link>
-            <Link href="/attractions/0" className="side-item">
+            <Link href="/attractions/f195b1dc-3c74-4719-bf71-5ea729dfd6a4" className="side-item">
               <div className="side-item-img"><img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70" alt="Great Wall" /></div>
               <div><div className="side-item-name">Great Wall</div><div className="side-item-meta">Beijing — Best in autumn</div></div>
             </Link>
-            
           </div>
-          
-          
         </div>
       </div>
     </div>
