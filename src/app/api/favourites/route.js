@@ -50,6 +50,23 @@ export async function POST(request) {
   if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
 
   const { attraction_id } = await request.json()
+
+  // Backend validation
+  if (!attraction_id) {
+    return NextResponse.json({ error: 'attraction_id is required.' }, { status: 400 })
+  }
+
+  // Check attraction actually exists
+  const { data: attraction } = await supabase
+    .from('attraction')
+    .select('attraction_id')
+    .eq('attraction_id', attraction_id)
+    .single()
+
+  if (!attraction) {
+    return NextResponse.json({ error: 'Attraction not found.' }, { status: 404 })
+  }
+
   const { data, error } = await supabase
     .from('favourite')
     .insert({ user_id: user.id, attraction_id })

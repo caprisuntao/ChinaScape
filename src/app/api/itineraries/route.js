@@ -53,6 +53,21 @@ export async function POST(request) {
   if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
 
   const body = await request.json()
+  
+  // Backend validation
+  if (!body.title || body.title.trim() === '') {
+    return NextResponse.json({ error: 'Title is required.' }, { status: 400 })
+  }
+  if (body.title.trim().length > 100) {
+    return NextResponse.json({ error: 'Title must be under 100 characters.' }, { status: 400 })
+  }
+  if (!body.duration_days || body.duration_days < 1) {
+    return NextResponse.json({ error: 'Duration must be at least 1 day.' }, { status: 400 })
+  }
+  if (body.duration_days > 30) {
+    return NextResponse.json({ error: 'Duration cannot exceed 30 days.' }, { status: 400 })
+  }
+
   const { data, error } = await supabase
     .from('itinerary')
     .insert({ ...body, user_id: user.id })

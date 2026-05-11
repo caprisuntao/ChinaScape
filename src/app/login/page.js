@@ -13,8 +13,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   async function handleLogin() {
-    setLoading(true)
     setError('')
+    if (!email.trim()) return setError('Email is required.')
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError('Please enter a valid email address.')
+    if (!password) return setError('Password is required.')
+    
+      setLoading(true)
 
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 

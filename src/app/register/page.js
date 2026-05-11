@@ -14,8 +14,15 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
 
   async function handleRegister() {
-    setLoading(true)
     setError('')
+    if (!name.trim()) return setError('Display name is required.')
+    if (name.trim().length < 2) return setError('Name must be at least 2 characters.')
+    if (!email.trim()) return setError('Email is required.')
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError('Please enter a valid email address.')
+    if (!password) return setError('Password is required.')
+    if (password.length < 6) return setError('Password must be at least 6 characters.')
+    setLoading(true)
+    
 
     const { data, error } = await supabase.auth.signUp({
       email,
