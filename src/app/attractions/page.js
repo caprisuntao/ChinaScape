@@ -1,13 +1,15 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { createClient } from '@/utils/supabase/client'
 import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation' // Added missing import
+import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
 
-export default function AttractionsPage() {
+// 1. We move all the logic into this inner component
+function AttractionsContent() {
   const supabase = createClient()
   const searchParams = useSearchParams()
   const initialQuery = searchParams.get('query') || '' // Get term from URL
+  
   const [attractions, setAttractions] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
@@ -31,7 +33,10 @@ export default function AttractionsPage() {
       .from('attraction')
       .select('*, city(*), category!inner(*)')
 
-    if (searchFilter) query = query.or(`name_en.ilike.%${searchFilter}%,name_zh.ilike.%${searchFilter}%`)
+    if (searchFilter) {
+      query = query.or(`name_en.ilike.%${searchFilter}%,name_zh.ilike.%${searchFilter}%`)
+    }
+    
     if (categoryFilter && categoryFilter !== 'All') {
       query = query.eq('category.name', categoryFilter)
     }
@@ -126,5 +131,14 @@ export default function AttractionsPage() {
         </div>
       )}
     </div>
+  )
+}
+
+// 2. We export the main page component wrapped in Suspense
+export default function AttractionsPage() {
+  return (
+    <Suspense fallback={<div style={{ textAlign: 'center', padding: '60px 0', color: '#7A6A58' }}>Loading page data...</div>}>
+      <AttractionsContent />
+    </Suspense>
   )
 }
