@@ -3,10 +3,45 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
 
+// Cache the featured attractions in the browser for 5 minutes
+const CACHE_KEY = 'chinascape_featured_attractions'
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes in milliseconds
+
+function getCachedData() {
+  try {
+    const cached = sessionStorage.getItem(CACHE_KEY)
+    if (!cached) return null
+
+    const { data, timestamp } = JSON.parse(cached)
+    const isExpired = Date.now() - timestamp > CACHE_DURATION
+
+    if (isExpired) {
+      sessionStorage.removeItem(CACHE_KEY)
+      return null
+    }
+
+    return data
+  } catch {
+    return null
+  }
+}
+
+function setCachedData(data) {
+  try {
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+      data,
+      timestamp: Date.now()
+    }))
+  } catch {
+    // silently fail if sessionStorage is unavailable
+  }
+}
+
 export default function Home() {
   const supabase = createClient()
   const [featured, setFeatured] = useState([])
   const [loading, setLoading] = useState(true)
+  const [cacheStatus, setCacheStatus] = useState('') 
 
   useEffect(() => {
     fetchFeaturedAttractions()
@@ -15,6 +50,16 @@ export default function Home() {
   async function fetchFeaturedAttractions() {
     setLoading(true)
     // Fetching the top 6 attractions and joining city/category info
+    // Check cache first
+    const cached = getCachedData()
+    if (cached) {
+      setFeatured(cached)
+      setLoading(false)
+      setCacheStatus('served from cache')
+      return
+    }
+
+    // No cache — fetch from Supabase
     const { data, error } = await supabase
       .from('attraction')
       .select('*, city(name_en), category(name)')
@@ -22,6 +67,8 @@ export default function Home() {
 
     if (!error) {
       setFeatured(data || [])
+      setCachedData(data || [])
+      setCacheStatus('fetched from database')
     }
     setLoading(false)
   }
@@ -68,6 +115,13 @@ export default function Home() {
             <div className="sec-title">Featured Attractions</div>
             <Link href="/attractions" className="sec-more">View all →</Link>
           </div>
+
+          {/* Cache status indicator — remove before final submission */}
+          {cacheStatus && (
+            <p style={{ fontSize: 11, color: '#7A6A58', marginBottom: 8, fontStyle: 'italic' }}>
+              ⚡ Data {cacheStatus}
+            </p>
+          )}
           
           <div className="attractions-grid">
             {loading ? (
