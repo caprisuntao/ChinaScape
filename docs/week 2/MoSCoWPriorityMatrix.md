@@ -15,7 +15,6 @@ High value to users; app can function without them but they improve usability an
 - Multimedia Content — photos and short videos on attraction pages.
 - Ticketing Links — links or instructions to official booking pages (English versions where available).
 - "Must-Try" Local Food section — recommended local dishes and nearby restaurants.
-- Integrated Map Pins — map visualization with pins for attractions and itinerary stops.
 - Offline Mode — allow users to download saved spots and itineraries for offline use.
 
 ## Could Have (Desirable)

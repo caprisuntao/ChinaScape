@@ -1,16 +1,18 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { createClient } from '@/utils/supabase/client' //[cite: 9]
+import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
 import SearchBar from './Searchbar'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 
 export default function Navbar() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [menuOpen, setMenuOpen] = useState(false)
   const supabase = createClient()
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     // 1. Check initial session on load
@@ -30,52 +32,152 @@ export default function Navbar() {
     return () => authListener.subscription.unsubscribe()
   }, [supabase, router])
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [pathname])
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
   const handleLogout = async () => {
     await supabase.auth.signOut()
-    router.refresh() // Refresh to update server-side data
+    setMenuOpen(false)
+    router.refresh()
   }
 
-  return (
-    <div className="topbar">
-      <Link href="/" className="topbar-logo" style={{ textDecoration: 'none' }}>
-        ChinaScape <span>中国旅游</span>
-      </Link>
-      
-      <div className="topbar-nav">
-        <Link href="/" className="nav-item">Home</Link>
-        <Link href="/itinerary" className="nav-item">Itinerary</Link>
-        <Link href="/cultural" className="nav-item">Cultural Guide</Link>
-        <Link href="/attractions" className="nav-item">Explore</Link>
-      </div>
+  const isActive = (path) => pathname === path ? 'active' : ''
 
-      <div className="topbar-right">
-        <SearchBar />
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/itinerary', label: 'Itinerary' },
+    { href: '/cultural', label: 'Cultural Guide' },
+    { href: '/attractions', label: 'Explore' },
+  ]
+
+  return (
+    <>
+      <div className="topbar">
+        <Link href="/" className="topbar-logo" style={{ textDecoration: 'none' }}>
+          ChinaScape <span>中国旅游</span>
+        </Link>
+        
+        <div className="topbar-nav">
+          {navLinks.map(link => (
+            <Link key={link.href} href={link.href} className={`nav-item ${isActive(link.href)}`}>
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="topbar-right">
+          <SearchBar />
         </div>
 
         {!loading && (
           user ? (
-            <>
+            <div className="topbar-auth">
               <Link href="/profile" className="profile-btn" style={{ textDecoration: 'none' }}>
                 <div className="profile-av">
-                  {/* Show first letter of display name or 'U' */}
                   {user.user_metadata?.display_name?.charAt(0) || '旅'}
                 </div>
                 My Profile
               </Link>
-              <button onClick={handleLogout} className="nav-item" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+              <button onClick={handleLogout} className="nav-item logout-btn" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                 Logout
               </button>
-            </>
+            </div>
           ) : (
-            <>
+            <div className="topbar-auth">
               <Link href="/login" className="nav-item">Login</Link>
               <Link href="/register" className="profile-btn" style={{ textDecoration: 'none' }}>
                 Register
               </Link>
-            </>
+            </div>
           )
         )}
+
+        {/* Hamburger button – visible on mobile */}
+        <button
+          className={`hamburger ${menuOpen ? 'open' : ''}`}
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={menuOpen}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
+
+      {/* Mobile menu overlay */}
+      <div
+        className={`mobile-menu-overlay ${menuOpen ? 'open' : ''}`}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Mobile menu drawer */}
+      <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
+        <div className="mobile-menu-header">
+          <Link href="/" className="topbar-logo" style={{ textDecoration: 'none', border: 'none', padding: 0, height: 'auto' }} onClick={() => setMenuOpen(false)}>
+            ChinaScape <span>中国旅游</span>
+          </Link>
+        </div>
+
+        <div className="mobile-menu-search">
+          <SearchBar />
+        </div>
+
+        <nav className="mobile-nav-links">
+          {navLinks.map(link => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`mobile-nav-item ${isActive(link.href)}`}
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="mobile-menu-auth">
+          {!loading && (
+            user ? (
+              <>
+                <Link href="/profile" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>
+                  <span className="profile-av" style={{ display: 'inline-flex', marginRight: 10, verticalAlign: 'middle' }}>
+                    {user.user_metadata?.display_name?.charAt(0) || '旅'}
+                  </span>
+                  My Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="mobile-nav-item mobile-logout-btn"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="mobile-nav-item" onClick={() => setMenuOpen(false)}>Login</Link>
+                <Link href="/register" className="mobile-nav-item mobile-register-btn" onClick={() => setMenuOpen(false)}>
+                  Register
+                </Link>
+              </>
+            )
+          )}
+        </div>
+      </div>
+    </>
   )
 }
 

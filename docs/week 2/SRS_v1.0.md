@@ -9,7 +9,7 @@
 This document defines the functional and non-functional requirements for ChinaScape, a bilingual platform that introduces Chinese tourist attractions, supports itinerary planning, and provides cultural explanations for international visitors.
 
 ### 1.2 Scope
-ChinaScape is a standalone web application (mobile-first) that helps international tourists discover attractions in China, plan itineraries, access cultural context in English, and use printable Chinese address flashcards for local communication. The platform may integrate third-party services for maps, ticketing links, and multimedia content.
+ChinaScape is a standalone web application that helps international tourists discover attractions in China, plan itineraries, access cultural context in English, and use printable Chinese address flashcards for local communication. The platform may integrate third-party services for maps, ticketing links, and multimedia content.
 
 ### 1.3 Primary Users
 - International tourists
