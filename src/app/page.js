@@ -152,7 +152,7 @@ export default function Home() {
           <div className="side-card">
             <div className="side-card-head">Trending This Season</div>
             {/* You can also fetch these or keep them static for now */}
-            <Link href="/attractions/5" className="side-item">
+            <Link href="/attractions/bf085b9c-6ba5-4602-8916-f7034df25796" className="side-item">
               <div className="side-item-img"><img src="https://images.unsplash.com/photo-1640100385267-4b935d8ef86c?w=120&q=70" alt="West Lake" /></div>
               <div><div className="side-item-name">West Lake</div><div className="side-item-meta">Hangzhou — Spring blossoms</div></div>
             </Link>
