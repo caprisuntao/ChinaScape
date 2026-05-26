@@ -12,7 +12,7 @@ export default function ApiDocs() {
       .then(data => setSpec(data))
   }, [])
 
-  if (!spec) return <div style={{ padding: 40 }}>Loading API docs...</div>
+  if (!spec) return <div className="loading-state">Loading API docs...</div>
 
   return <SwaggerUI spec={spec} />
 }

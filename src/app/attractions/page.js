@@ -139,20 +139,15 @@ function AttractionsContent() {
   return (
     <div className="attractions-page">
       {/* Search bar */}
-      <form onSubmit={handleSearch} style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+      <form onSubmit={handleSearch} className="attr-search-form">
         <input
           type="text"
           placeholder="Search attractions..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={{ flex: 1, padding: '10px 16px', border: '1px solid #E8E0D4', borderRadius: 24, fontSize: 14, outline: 'none', fontFamily: 'inherit' }}
+          className="attr-search-input"
         />
-        <button
-          type="submit"
-          style={{ background: '#B5271A', color: '#fff', border: 'none', borderRadius: 24, padding: '10px 24px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
-        >
-          Search
-        </button>
+        <button type="submit" className="attr-search-btn">Search</button>
       </form>
 
       {/* Category filter chips */}
@@ -169,21 +164,18 @@ function AttractionsContent() {
       </div>
 
       {/* Results count */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-        <p style={{ fontSize: 13, color: '#7A6A58' }}>
+      <div className="attr-meta-bar">
+        <p className="attr-meta-text">
           {loading ? 'Loading...' : `${totalCount} attraction${totalCount !== 1 ? 's' : ''} found`}
         </p>
-        {/* Cache status indicator — remove before final submission */}
-        {cacheStatus && (
-          <p style={{ fontSize: 11, color: '#7A6A58', fontStyle: 'italic' }}>⚡ {cacheStatus}</p>
-        )}
+        {cacheStatus && <p className="cache-status">⚡ {cacheStatus}</p>}
       </div>
 
       {/* Attractions grid */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '60px 0', color: '#7A6A58' }}>Loading attractions...</div>
+        <div className="empty-state">Loading attractions...</div>
       ) : attractions.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 0', color: '#7A6A58' }}>
+        <div className="empty-state">
           No attractions found. Try a different search or category.
         </div>
       ) : (
@@ -200,13 +192,13 @@ function AttractionsContent() {
                 </div>
                 <div className="acard-body">
                   <div className="acard-name">{attraction.name_en}</div>
-                  <div className="acard-name" style={{ fontSize: 12, color: '#7A6A58', fontWeight: 400 }}>{attraction.name_zh}</div>
+                  <div className="attr-card-zh">{attraction.name_zh}</div>
                   <div className="acard-loc">📍 {attraction.city?.name_en}</div>
-                  <div style={{ display: 'flex', gap: 6, marginTop: 7, flexWrap: 'wrap' }}>
+                  <div className="attr-card-tags">
                     <span className="acard-tag">{attraction.category?.name}</span>
                     {attraction.entrance_fee === 0
-                      ? <span className="acard-tag" style={{ background: '#EDFDF4', color: '#1A6B2E' }}>Free</span>
-                      : <span className="acard-tag" style={{ background: '#FEF9E7', color: '#7B6000' }}>¥{attraction.entrance_fee}</span>
+                      ? <span className={`acard-tag attr-card-free`}>Free</span>
+                      : <span className={`acard-tag attr-card-fee`}>¥{attraction.entrance_fee}</span>
                     }
                   </div>
                 </div>
@@ -216,31 +208,21 @@ function AttractionsContent() {
 
           {/* --- Pagination Controls --- */}
           {totalPages > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 15, marginTop: 40, paddingBottom: 40 }}>
-              <button 
+            <div className="pagination" style={{ paddingBottom: 40 }}>
+              <button
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
-                style={{ 
-                   padding: '8px 16px', borderRadius: 20, border: '1px solid #E8E0D4', 
-                   background: currentPage === 1 ? '#F5F5F5' : '#FFF',
-                   cursor: currentPage === 1 ? 'not-allowed' : 'pointer' 
-                }}
+                className="pagination-btn-round"
               >
                 Previous
               </button>
-
-              <span style={{ fontSize: 14, color: '#7A6A58' }}>
+              <span className="pagination-info">
                 Page <strong>{currentPage}</strong> of {totalPages}
               </span>
-
-              <button 
+              <button
                 disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
-                style={{ 
-                   padding: '8px 16px', borderRadius: 20, border: '1px solid #E8E0D4', 
-                   background: currentPage === totalPages ? '#F5F5F5' : '#FFF',
-                   cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' 
-                }}
+                className="pagination-btn-round"
               >
                 Next
               </button>
@@ -254,7 +236,7 @@ function AttractionsContent() {
 
 export default function AttractionsPage() {
   return (
-    <Suspense fallback={<div style={{ textAlign: 'center', padding: '60px 0', color: '#7A6A58' }}>Loading page data...</div>}>
+    <Suspense fallback={<div className="empty-state">Loading page data...</div>}>
       <AttractionsContent />
     </Suspense>
   )

@@ -252,10 +252,10 @@ export default function ItineraryPage() {
 
   // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--paper)' }}>
+    <div className="itin-page-wrap">
 
       {/* Top bar */}
-      <div className="detail-bar" style={{ padding: '0 32px' }}>
+      <div className="detail-bar">
         <Link href="/" className="detail-action">← Back</Link>
 
         {/* Editable title */}
@@ -266,25 +266,20 @@ export default function ItineraryPage() {
             onChange={e => setTitle(e.target.value)}
             onBlur={() => setEditingTitle(false)}
             onKeyDown={e => e.key === 'Enter' && setEditingTitle(false)}
-            style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 16, fontWeight: 700, border: 'none', borderBottom: '2px solid #B5271A', outline: 'none', background: 'transparent', padding: '2px 6px', color: 'var(--ink)', minWidth: 200 }}
+            className="itin-title-input"
           />
         ) : (
           <div
             onClick={() => setEditingTitle(true)}
-            style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 17, fontWeight: 700, cursor: 'pointer', padding: '14px 0', display: 'flex', alignItems: 'center', gap: 6 }}
+            className="itin-title-display"
             title="Click to rename"
           >
-            {title} <span style={{ fontSize: 11, color: '#7A6A58', fontFamily: 'inherit' }}>✎</span>
+            {title} <span className="itin-title-hint">✎</span>
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
-          <button
-            onClick={downloadOffline}
-            style={{ background: 'var(--paper)', color: 'var(--ink-md)', border: '1px solid #E8E0D4', borderRadius: 20, padding: '6px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
-          >
-             Offline
-          </button>
+        <div className="itin-topbar-actions">
+          <button onClick={downloadOffline} className="btn-outline"> Offline</button>
           <button
             onClick={saveItinerary}
             disabled={saving}
@@ -297,13 +292,9 @@ export default function ItineraryPage() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ display: 'flex', borderBottom: '1px solid #E8E0D4', background: '#fff', padding: '0 32px' }}>
+      <div className="itin-tab-bar">
         {['builder', 'saved'].map(tab => (
-          <button key={tab} onClick={() => setActiveTab(tab)} style={{
-            padding: '12px 20px', fontSize: 13, fontWeight: 500, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit',
-            color: activeTab === tab ? '#B5271A' : '#7A6A58',
-            borderBottom: activeTab === tab ? '2px solid #B5271A' : '2px solid transparent',
-          }}>
+          <button key={tab} onClick={() => setActiveTab(tab)} className={`itin-tab-btn${activeTab === tab ? ' active' : ''}`}>
             {tab === 'builder' ? ' Builder' : ` Saved (${savedItineraries.length})`}
           </button>
         ))}
@@ -311,36 +302,29 @@ export default function ItineraryPage() {
 
       {/* ── SAVED TAB ── */}
       {activeTab === 'saved' && (
-        <div style={{ padding: '32px 48px' }}>
+        <div className="itin-tab-area">
           {!user ? (
-            <div style={{ textAlign: 'center', padding: '60px 0', color: '#7A6A58' }}>
+            <div className="empty-state">
               <p style={{ fontSize: 15, marginBottom: 16 }}>Log in to see your saved itineraries</p>
-              <Link href="/login" style={{ background: '#B5271A', color: '#fff', borderRadius: 24, padding: '10px 24px', textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>Sign In</Link>
+              <Link href="/login" className="empty-state-link" style={{ padding: '10px 24px' }}>Sign In</Link>
             </div>
           ) : savedItineraries.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px 0', color: '#7A6A58' }}>
-              No saved itineraries yet. Build one and click Save!
-            </div>
+            <div className="empty-state">No saved itineraries yet. Build one and click Save!</div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px,1fr))', gap: 16 }}>
+            <div className="saved-grid">
               {savedItineraries.map(it => (
-                <div key={it.itinerary_id} style={{ background: '#fff', border: '1px solid #E8E0D4', borderRadius: 12, padding: '18px 20px' }}>
-                  <div style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 15, fontWeight: 700, marginBottom: 4 }}>{it.title}</div>
-                  <div style={{ fontSize: 12, color: '#7A6A58', marginBottom: 14 }}>{it.duration_days} day{it.duration_days !== 1 ? 's' : ''} · Saved {new Date(it.created_at).toLocaleDateString()}</div>
-                  <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-                    <button
-                      onClick={() => loadIntoBuilder(it)}
-                      style={{ flex: 1, background: '#B5271A', color: '#fff', border: 'none', borderRadius: 20, padding: '8px 0', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
-                    >
-                      Load into Builder
-                    </button>
+                <div key={it.itinerary_id} className="saved-card">
+                  <div className="saved-card-title">{it.title}</div>
+                  <div className="saved-card-meta">{it.duration_days} day{it.duration_days !== 1 ? 's' : ''} · Saved {new Date(it.created_at).toLocaleDateString()}</div>
+                  <div className="saved-card-actions">
+                    <button onClick={() => loadIntoBuilder(it)} className="btn-sm-primary">Load into Builder</button>
                     <button
                       onClick={async () => {
                         await supabase.from('itinerary').delete().eq('itinerary_id', it.itinerary_id)
                         fetchSaved()
                         showToast('Deleted')
                       }}
-                      style={{ background: 'none', border: '1px solid #E8E0D4', borderRadius: 20, padding: '8px 14px', fontSize: 12, color: '#7A6A58', cursor: 'pointer', fontFamily: 'inherit' }}
+                      className="btn-sm-delete"
                     >
                       Delete
                     </button>
@@ -354,23 +338,23 @@ export default function ItineraryPage() {
 
       {/* ── BUILDER TAB ── */}
       {activeTab === 'builder' && (
-        <div className="itin-page" style={{ alignItems: 'start' }}>
+        <div className="itin-page">
 
           {/* Left — days */}
-          <div className="itin-main" style={{ flex: 1 }}>
+          <div className="itin-main">
 
 
             {/* Day cards */}
             {days.map((day, dayIdx) => (
-              <div key={dayIdx} className="day-card" style={{ marginBottom: 16 }}>
+              <div key={dayIdx} className="day-card">
                 <div className="day-head">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1 }}>
+                  <div className="day-header-row">
                     <h3 style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 14, color: '#fff' }}>Day {day.day}</h3>
                     <input
                       value={day.city}
                       onChange={e => updateCity(dayIdx, e.target.value)}
                       placeholder="City name"
-                      style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: 6, padding: '3px 10px', color: '#fff', fontSize: 12, fontFamily: 'inherit', outline: 'none', width: 120 }}
+                      className="city-input"
                     />
                   </div>
                   <div style={{ display: 'flex', gap: 6 }}>
@@ -382,7 +366,7 @@ export default function ItineraryPage() {
                     {days.length > 1 && (
                       <button
                         onClick={() => removeDay(dayIdx)}
-                        style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.4)', background: 'none', color: '#fff', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        className="btn-remove-day"
                         title="Remove day"
                       >×</button>
                     )}
@@ -390,7 +374,7 @@ export default function ItineraryPage() {
                 </div>
 
                 {day.items.length === 0 ? (
-                  <div style={{ padding: '24px 18px', textAlign: 'center', color: '#BFB5A8', fontSize: 13 }}>
+                  <div className="day-empty-text">
                     Click <strong>+</strong> to add attractions to this day
                   </div>
                 ) : (
@@ -402,7 +386,7 @@ export default function ItineraryPage() {
                       onDragStart={() => onDragStart(dayIdx, itemIdx)}
                       onDragOver={e => onDragOver(e, dayIdx, itemIdx)}
                       onDragEnd={onDragEnd}
-                      style={{ opacity: dragInfo?.dayIdx === dayIdx && dragInfo?.itemIdx === itemIdx ? 0.4 : 1, cursor: 'grab' }}
+                      style={{ opacity: dragInfo?.dayIdx === dayIdx && dragInfo?.itemIdx === itemIdx ? 0.4 : 1 }}
                     >
                       <span className="act-drag" title="Drag to reorder">☰</span>
                       <div className="act-img">
@@ -410,17 +394,17 @@ export default function ItineraryPage() {
                       </div>
                       <div style={{ flex: 1 }}>
                         <div className="act-name">{item.name}</div>
-                        <div style={{ fontSize: 11, color: '#7A6A58' }}>{item.name_zh} · ¥{item.fee}</div>
+                        <div className="act-item-meta">{item.name_zh} · ¥{item.fee}</div>
                       </div>
                       <input
                         type="time"
                         value={toTimeInputValue(item.time)}
                         onChange={e => updateTime(dayIdx, itemIdx, e.target.value)}
-                        style={{ border: '1px solid #E8E0D4', borderRadius: 6, padding: '3px 8px', fontSize: 12, fontFamily: 'inherit', color: '#3D2E1E', outline: 'none', background: 'var(--paper)' }}
+                        className="act-item-time"
                       />
                       <button
                         onClick={() => removeItem(dayIdx, itemIdx)}
-                        style={{ background: 'none', border: 'none', color: '#BFB5A8', cursor: 'pointer', fontSize: 16, padding: '0 4px', lineHeight: 1 }}
+                        className="btn-icon"
                         title="Remove"
                       >×</button>
                     </div>
@@ -430,12 +414,7 @@ export default function ItineraryPage() {
             ))}
 
             {/* Add day button */}
-            <button
-              onClick={addDay}
-              style={{ width: '100%', padding: '12px 0', border: '2px dashed #D9CFC0', borderRadius: 12, background: 'none', color: '#7A6A58', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .2s' }}
-              onMouseEnter={e => { e.target.style.borderColor = '#B5271A'; e.target.style.color = '#B5271A' }}
-              onMouseLeave={e => { e.target.style.borderColor = '#D9CFC0'; e.target.style.color = '#7A6A58' }}
-            >
+            <button onClick={addDay} className="btn-add-day">
               + Add Day {days.length + 1}
             </button>
           </div>
@@ -458,7 +437,7 @@ export default function ItineraryPage() {
                 <span className="cost-label"> Food (est.)</span>
                 <span style={{ fontWeight: 500 }}>¥{foodTotal}</span>
               </div>
-              <div className="cost-row" style={{ borderTop: '2px solid #E8E0D4', marginTop: 4, paddingTop: 12, fontWeight: 700, color: '#B5271A' }}>
+              <div className="cost-row cost-total-row">
                 <span>Total</span>
                 <span>¥{grandTotal}</span>
               </div>
@@ -468,30 +447,27 @@ export default function ItineraryPage() {
             </div>
 
             {/* Templates */}
-            <div style={{ background: '#fff', border: '1px solid #E8E0D4', borderRadius: 12, overflow: 'hidden', marginBottom: 14 }}>
-              <div style={{ padding: '12px 16px', fontFamily: "'Noto Serif SC', serif", fontSize: 14, fontWeight: 700, borderBottom: '1px solid #F2EDE4', background: 'var(--paper)' }}>
-                 Starter Templates
-              </div>
-              <button onClick={() => loadTemplate('1-day')} className="itin-btn" style={{ borderRadius: 0, borderBottom: '1px solid #F2EDE4' }}>
+            <div className="template-card">
+              <div className="template-card-head"> Starter Templates</div>
+              <button onClick={() => loadTemplate('1-day')} className="itin-btn itin-template-btn">
                 <span> Beijing in a Day</span><span style={{ color: '#B5271A' }}>›</span>
               </button>
-              <button onClick={() => loadTemplate('2-day')} className="itin-btn" style={{ borderRadius: 0 }}>
+              <button onClick={() => loadTemplate('2-day')} className="itin-btn itin-template-btn">
                 <span> Beijing & Xi'an Classic</span><span style={{ color: '#B5271A' }}>›</span>
               </button>
             </div>
 
             {/* Trip summary */}
-            <div style={{ background: 'var(--red-xlt)', border: '1px solid var(--red-lt)', borderRadius: 12, padding: '14px 16px', marginBottom: 14 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#B5271A', marginBottom: 8 }}> Trip Summary</div>
-              <div style={{ fontSize: 12, color: '#3D2E1E', lineHeight: 2 }}>
+            <div className="summary-card">
+              <div className="summary-card-title"> Trip Summary</div>
+              <div className="summary-card-list">
                 <div> {days.length} day{days.length !== 1 ? 's' : ''}</div>
                 <div> {days.flatMap(d => d.items).length} attraction{days.flatMap(d => d.items).length !== 1 ? 's' : ''}</div>
                 <div> {[...new Set(days.map(d => d.city).filter(Boolean))].join(', ') || '—'}</div>
               </div>
             </div>
 
-            {/* Offline note */}
-            <div style={{ background: '#F2EDE4', borderRadius: 12, padding: '12px 16px', fontSize: 11, color: '#7A6A58', lineHeight: 1.6 }}>
+            <div className="offline-note">
                <strong>Offline Mode:</strong> Click ⬇ Offline above to download your itinerary as a JSON file. Open it on your phone anytime — no internet needed.
             </div>
           </div>
@@ -501,42 +477,40 @@ export default function ItineraryPage() {
       {/* ── ATTRACTION PICKER MODAL ── */}
       {showAttrPicker !== null && (
         <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(28,18,9,0.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+          className="modal-overlay"
           onClick={e => { if (e.target === e.currentTarget) { setShowAttrPicker(null); setAttrSearch('') } }}
         >
-          <div style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 520, maxHeight: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 24px 60px rgba(28,18,9,0.2)' }}>
-            <div style={{ padding: '18px 20px', borderBottom: '1px solid #F2EDE4', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 15, fontWeight: 700 }}>Add to Day {showAttrPicker + 1}</span>
-              <button onClick={() => { setShowAttrPicker(null); setAttrSearch('') }} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#7A6A58' }}>×</button>
+          <div className="modal-content">
+            <div className="modal-header">
+              <span className="modal-title">Add to Day {showAttrPicker + 1}</span>
+              <button onClick={() => { setShowAttrPicker(null); setAttrSearch('') }} className="modal-close">×</button>
             </div>
-            <div style={{ padding: '12px 20px', borderBottom: '1px solid #F2EDE4' }}>
+            <div className="modal-search">
               <input
                 autoFocus
                 value={attrSearch}
                 onChange={e => setAttrSearch(e.target.value)}
                 placeholder="Search attractions..."
-                style={{ width: '100%', padding: '9px 14px', border: '1px solid #E8E0D4', borderRadius: 24, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
+                className="modal-search-input"
               />
             </div>
-            <div style={{ overflowY: 'auto', flex: 1 }}>
+            <div className="modal-list">
               {filteredAttractions.length === 0 ? (
-                <div style={{ padding: '32px 20px', textAlign: 'center', color: '#7A6A58', fontSize: 13 }}>No attractions found</div>
+                <div className="picker-empty">No attractions found</div>
               ) : filteredAttractions.map(a => (
                 <div
                   key={a.attraction_id}
                   onClick={() => addAttractionToDay(showAttrPicker, a)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderBottom: '1px solid #F2EDE4', cursor: 'pointer', transition: 'background .15s' }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#FAF7F2'}
-                  onMouseLeave={e => e.currentTarget.style.background = '#fff'}
+                  className="picker-item"
                 >
-                  <div style={{ width: 44, height: 44, borderRadius: 8, overflow: 'hidden', flexShrink: 0 }}>
-                    <img src={a.image_url || 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} alt={a.name_en} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.target.src = 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} />
+                  <div className="picker-item-img">
+                    <img src={a.image_url || 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} alt={a.name_en} onError={e => e.target.src = 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} />
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1C1209' }}>{a.name_en}</div>
-                    <div style={{ fontSize: 11, color: '#7A6A58' }}>{a.name_zh} · {a.city?.name_en} · ¥{a.entrance_fee || 0}</div>
+                  <div className="picker-item-info">
+                    <div className="picker-item-name">{a.name_en}</div>
+                    <div className="picker-item-sub">{a.name_zh} · {a.city?.name_en} · ¥{a.entrance_fee || 0}</div>
                   </div>
-                  <span style={{ fontSize: 18, color: '#B5271A', fontWeight: 700 }}>+</span>
+                  <span className="picker-item-add">+</span>
                 </div>
               ))}
             </div>

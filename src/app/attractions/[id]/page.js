@@ -138,7 +138,7 @@ export default function AttractionDetailPage() {
     setTimeout(() => setToast(''), 2500)
   }
 
-  if (loading) return <div style={{ padding: 60, textAlign: 'center', color: '#7A6A58' }}>Loading...</div>
+  if (loading) return <div className="loading-state">Loading...</div>
   if (!attraction) return null
 
   return (
@@ -154,9 +154,7 @@ export default function AttractionDetailPage() {
           <div className="detail-hero-name">{attraction.name_en}</div>
           <div className="detail-hero-cn">{attraction.name_zh}</div>
           {/* Optional Cache Status Label */}
-          <div style={{ fontSize: 10, opacity: 0.6, marginTop: 10, fontStyle: 'italic' }}>
-            {cacheStatus}
-          </div>
+          <div className="cache-status-overlay">{cacheStatus}</div>
         </div>
       </div>
 
@@ -180,14 +178,14 @@ export default function AttractionDetailPage() {
           <p className="detail-desc">{attraction.description_en}</p>
 
           {attraction.booking_notes && (
-            <div style={{ marginTop: 20, background: '#FEF9E7', border: '1px solid #C9960A', borderRadius: 10, padding: '14px 18px' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#7B6000', marginBottom: 5 }}>📋 BEFORE YOU GO</div>
-              <p style={{ fontSize: 13, color: '#3D2E1E', lineHeight: 1.7 }}>{attraction.booking_notes}</p>
+            <div className="booking-note">
+              <div className="booking-note-title">📋 BEFORE YOU GO</div>
+              <p className="booking-note-text">{attraction.booking_notes}</p>
             </div>
           )}
 
           <div className="detail-addr">
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#3D2E1E', marginBottom: 4 }}>📍 ADDRESS</div>
+            <div className="detail-addr-label">📍 ADDRESS</div>
             <div>{attraction.address_en}</div>
             <div>{attraction.address_zh}</div>
           </div>
@@ -217,11 +215,11 @@ export default function AttractionDetailPage() {
           </div>
 
           {attraction.ticket_url && (
-            <a 
+            <a
               href={attraction.ticket_url}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: 'block', background: '#B5271A', color: '#fff', borderRadius: 24, padding: '12px 0', textAlign: 'center', fontSize: 14, fontWeight: 600, textDecoration: 'none', marginBottom: 12 }}
+              className="detail-ticket-btn"
             >
               🎟 Book Tickets
             </a>
@@ -229,7 +227,7 @@ export default function AttractionDetailPage() {
 
           <button
             onClick={handleSave}
-            style={{ width: '100%', background: saved ? '#3D2E1E' : '#FAF7F2', color: saved ? '#fff' : '#3D2E1E', border: '1px solid #E8E0D4', borderRadius: 24, padding: '12px 0', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+            className={`detail-save-btn${saved ? ' saved' : ''}`}
           >
             {saved ? '✓ Saved to Favourites' : '+ Save to Favourites'}
           </button>

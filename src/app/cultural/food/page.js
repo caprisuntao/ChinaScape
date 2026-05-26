@@ -121,102 +121,46 @@ export default function FoodPage() {
   return (
     <div className="screen active">
       {/* Navigation Top Bar */}
-      <div className="detail-bar" style={{ padding: '0 32px' }}>
+      <div className="detail-bar">
         <Link href="/cultural" className="detail-action">← Back to Cultural Guide</Link>
-        <div style={{ padding: '14px 0', fontFamily: "'Noto Serif SC', serif", fontSize: 17, fontWeight: 700 }}>
-          Must-Try Foods
-        </div>
+        <div className="detail-bar-title">Must-Try Foods</div>
       </div>
 
-      {/* Main Content Area */}
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 32px' }}>
+      <div className="page-header">
         <div style={{ marginBottom: '40px' }}>
-          <h1 style={{ fontFamily: "'Noto Serif SC', serif", fontSize: '32px', color: '#3D2E1E', marginBottom: '8px' }}>
-             Local Chinese Delicacies
-          </h1>
-          <p style={{ fontSize: '16px', color: '#7A6A58' }}>
+          <h1 className="page-heading"> Local Chinese Delicacies</h1>
+          <p className="page-subheading">
             China&apos;s culinary landscape is vast and deeply regional. Here are the must-try dishes
             every traveler should seek out — from street stalls to legendary restaurants.
           </p>
         </div>
 
-        {/* ── Search Bar ─────────────────────────────────────────────────── */}
-        <div style={{ marginBottom: '28px' }}>
+        <div className="food-search-wrap">
           <input
             autoFocus
             value={search}
             onChange={e => handleSearch(e.target.value)}
             placeholder="Search by dish name or city…"
-            style={{
-              width: '100%',
-              padding: '12px 18px',
-              border: '1px solid #E8E0D4',
-              borderRadius: '24px',
-              fontSize: '14px',
-              outline: 'none',
-              fontFamily: 'inherit',
-              color: '#3D2E1E',
-              background: '#fff',
-              boxSizing: 'border-box',
-            }}
+            className="food-search-input"
           />
         </div>
 
-        {/* ── Dish Cards ─────────────────────────────────────────────────── */}
         {currentItems.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 0', color: '#7A6A58', fontSize: '14px' }}>
+          <div className="empty-state" style={{ fontSize: '14px' }}>
             No dishes found matching &ldquo;{search}&rdquo;
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div className="food-list">
             {currentItems.map((dish, i) => (
-              <div
-                key={i}
-                style={{
-                  background: '#FAF7F2',
-                  borderRadius: '12px',
-                  padding: '24px',
-                  border: '1px solid #E8E0D4',
-                  transition: 'box-shadow 0.2s',
-                }}
-              >
-                {/* Header */}
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', marginBottom: '8px' }}>
-                  <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#B5271A', margin: 0 }}>
-                    {dish.name}
-                  </h2>
-                  <span style={{ fontSize: '15px', color: '#7A6A58', fontFamily: "'Noto Serif SC', serif" }}>
-                    {dish.name_zh}
-                  </span>
-                  <span style={{
-                    fontSize: '11px',
-                    background: '#E8E0D4',
-                    color: '#3D2E1E',
-                    borderRadius: '10px',
-                    padding: '2px 10px',
-                    marginLeft: 'auto',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {dish.origin}
-                  </span>
+              <div key={i} className="food-card">
+                <div className="food-card-hd">
+                  <h2 className="food-card-name">{dish.name}</h2>
+                  <span className="food-card-zh">{dish.name_zh}</span>
+                  <span className="food-card-origin">{dish.origin}</span>
                 </div>
-
-                {/* Description */}
-                <p style={{ fontSize: '14px', color: '#3D2E1E', lineHeight: '1.7', margin: '0 0 12px 0' }}>
-                  {dish.description}
-                </p>
-
-                {/* Must-try tip */}
-                <div style={{
-                  background: '#fff',
-                  borderRadius: '8px',
-                  padding: '10px 14px',
-                  borderLeft: '3px solid #B5271A',
-                  fontSize: '13px',
-                  color: '#3D2E1E',
-                  lineHeight: '1.5',
-                }}>
-                  <span style={{ fontWeight: 600, color: '#B5271A' }}> Where to try:</span>{' '}
+                <p className="food-card-desc">{dish.description}</p>
+                <div className="food-card-tip">
+                  <span className="food-tip-label"> Where to try:</span>{' '}
                   {dish.mustTry}
                 </div>
               </div>
@@ -226,28 +170,14 @@ export default function FoodPage() {
 
         {/* ── Pagination Controls ────────────────────────────────────────── */}
         {totalPages > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '40px' }}>
-            {/* Prev */}
+          <div className="pagination">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '6px',
-                border: '1px solid #E8E0D4',
-                background: currentPage === 1 ? '#F5F5F5' : '#FAF7F2',
-                color: currentPage === 1 ? '#A0A0A0' : '#3D2E1E',
-                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                fontSize: '14px',
-                fontWeight: 600,
-                fontFamily: 'inherit',
-                transition: 'all 0.2s',
-              }}
+              className="pagination-btn"
             >
               ← Prev
             </button>
-
-            {/* Page numbers */}
             {Array.from({ length: totalPages }, (_, idx) => {
               const pageNum = idx + 1;
               const isActive = currentPage === pageNum;
@@ -255,58 +185,23 @@ export default function FoodPage() {
                 <button
                   key={pageNum}
                   onClick={() => handlePageChange(pageNum)}
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '6px',
-                    border: isActive ? '1px solid #B5271A' : '1px solid #E8E0D4',
-                    background: isActive ? '#B5271A' : '#FAF7F2',
-                    color: isActive ? '#FFFFFF' : '#3D2E1E',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    fontFamily: 'inherit',
-                    transition: 'all 0.2s',
-                  }}
+                  className={`pagination-num${isActive ? ' active' : ''}`}
                 >
                   {pageNum}
                 </button>
               );
             })}
-
-            {/* Next */}
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '6px',
-                border: '1px solid #E8E0D4',
-                background: currentPage === totalPages ? '#F5F5F5' : '#FAF7F2',
-                color: currentPage === totalPages ? '#A0A0A0' : '#3D2E1E',
-                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                fontSize: '14px',
-                fontWeight: 600,
-                fontFamily: 'inherit',
-                transition: 'all 0.2s',
-              }}
+              className="pagination-btn"
             >
               Next →
             </button>
           </div>
         )}
 
-        {/* Footer note */}
-        <div style={{
-          marginTop: '40px',
-          padding: '16px 20px',
-          background: '#F2EDE4',
-          borderRadius: '12px',
-          fontSize: '13px',
-          color: '#7A6A58',
-          lineHeight: '1.6',
-          textAlign: 'center',
-        }}>
+        <div className="food-footer-tip">
           <strong> Pro Tip:</strong> When in China, look for restaurants that are busy with locals —
           it&apos;s the best sign of quality food. Don&apos;t be afraid to point at the menu
           (or at what other tables are having)!

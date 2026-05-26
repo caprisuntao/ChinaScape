@@ -95,14 +95,14 @@ export default function Home() {
       <div className="home-body">
         <div className="home-main">
           <div className="qa-grid">
-            <Link href="/itinerary" className="qa-card" style={{ textDecoration: 'none' }}>
+            <Link href="/itinerary" className="qa-card">
               <div className="qa-img"><img src="https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=200&q=80" alt="Itinerary" /></div>
               <div>
                 <div className="qa-label">Itinerary Planner</div>
                 <div className="qa-sub">Build your day-by-day journey</div>
               </div>
             </Link>
-            <Link href="/cultural" className="qa-card" style={{ textDecoration: 'none' }}>
+            <Link href="/cultural" className="qa-card">
               <div className="qa-img"><img src="https://images.unsplash.com/photo-1537819191377-d3305ffddce4?w=200&q=80" alt="Cultural" /></div>
               <div>
                 <div className="qa-label">Cultural Guide</div>
@@ -118,7 +118,7 @@ export default function Home() {
 
           {/* Cache status indicator — remove before final submission */}
           {cacheStatus && (
-            <p style={{ fontSize: 11, color: '#7A6A58', marginBottom: 8, fontStyle: 'italic' }}>
+            <p className="cache-status" style={{ marginBottom: 8 }}>
               ⚡ Data {cacheStatus}
             </p>
           )}

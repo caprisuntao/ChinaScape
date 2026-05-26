@@ -65,7 +65,7 @@ export default function Navbar() {
   return (
     <>
       <div className="topbar">
-        <Link href="/" className="topbar-logo" style={{ textDecoration: 'none' }}>
+        <Link href="/" className="topbar-logo">
           ChinaScape <span>中国旅游</span>
         </Link>
         
@@ -84,7 +84,7 @@ export default function Navbar() {
         {!loading && (
           user ? (
             <div className="topbar-auth">
-              <Link href="/profile" className="profile-btn" style={{ textDecoration: 'none' }}>
+              <Link href="/profile" className="profile-btn">
                 <div className="profile-av">
                   {user.user_metadata?.display_name?.charAt(0) || '旅'}
                 </div>
@@ -97,9 +97,7 @@ export default function Navbar() {
           ) : (
             <div className="topbar-auth">
               <Link href="/login" className="nav-item">Login</Link>
-              <Link href="/register" className="profile-btn" style={{ textDecoration: 'none' }}>
-                Register
-              </Link>
+              <Link href="/register" className="profile-btn">Register</Link>
             </div>
           )
         )}
@@ -127,7 +125,7 @@ export default function Navbar() {
       {/* Mobile menu drawer */}
       <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
         <div className="mobile-menu-header">
-          <Link href="/" className="topbar-logo" style={{ textDecoration: 'none', border: 'none', padding: 0, height: 'auto' }} onClick={() => setMenuOpen(false)}>
+          <Link href="/" className="topbar-logo" onClick={() => setMenuOpen(false)}>
             ChinaScape <span>中国旅游</span>
           </Link>
         </div>

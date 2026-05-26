@@ -3,23 +3,15 @@ import Link from 'next/link';
 export default function CulturalPage() {
   return (
     <div className="screen active">
-      <div className="detail-bar" style={{ padding: '0 32px' }}>
-        <Link href="/" className="detail-action">
-          ← Back
-        </Link>
-        <div style={{ padding: '14px 0', fontFamily: "'Noto Serif SC', serif", fontSize: 17, fontWeight: 700 }}>
-          Cultural Guide
-        </div>
+      <div className="detail-bar">
+        <Link href="/" className="detail-action">← Back</Link>
+        <div className="detail-bar-title">Cultural Guide</div>
       </div>
 
       <div className="cultural-page">
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 28, fontWeight: 700 }}>
-            Know Before You Go
-          </div>
-          <div style={{ fontSize: 14, color: 'var(--ink-lt)', marginTop: 8 }}>
-            Essential cultural knowledge for your China journey
-          </div>
+        <div className="page-header-center">
+          <h1>Know Before You Go</h1>
+          <p>Essential cultural knowledge for your China journey</p>
         </div>
 
         <div className="cultural-grid">

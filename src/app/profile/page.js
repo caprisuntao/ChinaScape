@@ -107,7 +107,7 @@ export default function Profile() {
   }
 
   if (loading) {
-    return <div style={{ padding: 60, textAlign: 'center', color: '#7A6A58' }}>Loading your profile...</div>
+    return <div className="loading-state">Loading your profile...</div>
   }
 
   const displayName = profileData?.display_name || user?.user_metadata?.display_name || 'Explorer'
@@ -115,9 +115,9 @@ export default function Profile() {
 
   return (
     <div className="screen active">
-      <div className="detail-bar" style={{ padding: '0 32px' }}>
+      <div className="detail-bar">
         <Link href="/" className="detail-action">← Back</Link>
-        <div style={{ padding: '14px 0', fontFamily: "'Noto Serif SC', serif", fontSize: 17, fontWeight: 700 }}>My Profile</div>
+        <div className="detail-bar-title">My Profile</div>
       </div>
 
       <div className="profile-page">
@@ -126,19 +126,19 @@ export default function Profile() {
           <div className="profile-av-lg">{initials}</div>
 
           {isEditing ? (
-            <div style={{ marginTop: 12, width: '100%' }}>
+            <div className="prof-edit-wrap">
               <input
                 type="text"
                 value={newName}
                 onChange={e => setNewName(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSaveName()}
-                style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #E8E0D4', textAlign: 'center', fontFamily: 'inherit', fontSize: '15px', outline: 'none' }}
+                className="prof-edit-input"
               />
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '10px' }}>
-                <button onClick={handleSaveName} disabled={updating} style={{ color: '#B5271A', fontSize: '13px', fontWeight: 600, border: 'none', background: 'none', cursor: 'pointer' }}>
+              <div className="prof-edit-actions">
+                <button onClick={handleSaveName} disabled={updating} className="prof-edit-save">
                   {updating ? 'Saving...' : 'Save'}
                 </button>
-                <button onClick={() => { setIsEditing(false); setNewName(displayName) }} style={{ color: '#7A6A58', fontSize: '13px', border: 'none', background: 'none', cursor: 'pointer' }}>
+                <button onClick={() => { setIsEditing(false); setNewName(displayName) }} className="prof-edit-cancel">
                   Cancel
                 </button>
               </div>
@@ -146,13 +146,13 @@ export default function Profile() {
           ) : (
             <div className="profile-name">
               {displayName}
-              <span onClick={() => setIsEditing(true)} style={{ fontSize: 10, marginLeft: 8, color: '#B5271A', cursor: 'pointer', fontWeight: 400 }}>✎ Edit</span>
+              <span onClick={() => setIsEditing(true)} className="prof-edit-icon">✎ Edit</span>
             </div>
           )}
 
           <div className="profile-sub">{user?.email}</div>
-          <p style={{ textAlign: 'center', fontSize: 13, color: '#7A6A58', marginTop: 12 }}>
-            <Link href="/reset-password" style={{ color: '#B5271A', fontWeight: 500 }}>Reset password</Link>
+          <p className="prof-reset-link">
+            <Link href="/reset-password" className="auth-link">Reset password</Link>
           </p>
 
           {/* Stats — real counts */}
@@ -168,7 +168,7 @@ export default function Profile() {
           </div>
 
           {/* Member since */}
-          <div style={{ marginTop: 16, fontSize: 11, color: '#BFB5A8', textAlign: 'center' }}>
+          <div className="prof-member-since">
             Member since {new Date(user?.created_at).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
           </div>
         </div>
@@ -180,28 +180,19 @@ export default function Profile() {
           <div className="prof-card">
             <div className="prof-card-head">
               Saved Itineraries
-              <Link href="/itinerary" style={{ fontSize: 12, color: '#B5271A', fontFamily: 'inherit', fontWeight: 500, textDecoration: 'none' }}>
-                + New
-              </Link>
+              <Link href="/itinerary" className="auth-link" style={{ fontSize: 12, textDecoration: 'none' }}>+ New</Link>
             </div>
 
             {itineraries.length === 0 ? (
-              <div style={{ padding: '24px 20px', textAlign: 'center' }}>
-                <p style={{ fontSize: 13, color: '#7A6A58', marginBottom: 12 }}>No itineraries saved yet.</p>
-                <Link href="/itinerary" style={{ background: '#B5271A', color: '#fff', borderRadius: 20, padding: '8px 20px', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
-                  Build your first itinerary →
-                </Link>
+              <div className="prof-empty">
+                <p className="empty-state-text">No itineraries saved yet.</p>
+                <Link href="/itinerary" className="empty-state-link">Build your first itinerary →</Link>
               </div>
             ) : (
               itineraries.map(it => (
                 <div key={it.itinerary_id} className="saved-row">
-                  {/* Icon */}
-                  <div style={{ width: 44, height: 44, borderRadius: 8, background: '#FDF2F1', border: '1px solid #FADBD8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
-                    🗓
-                  </div>
-
-                  {/* Info */}
-                  <div style={{ flex: 1 }}>
+                  <div className="prof-itin-icon">🗓</div>
+                  <div className="prof-itin-info">
                     <div className="saved-name">{it.title}</div>
                     <div className="saved-meta">
                       {it.duration_days} day{it.duration_days !== 1 ? 's' : ''}
@@ -209,15 +200,8 @@ export default function Profile() {
                       {' · '}Saved {new Date(it.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
                   </div>
-
-                  {/* Actions */}
-                  <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                    <Link
-                      href="/itinerary"
-                      style={{ fontSize: 12, color: '#B5271A', fontWeight: 600, textDecoration: 'none', padding: '5px 10px', border: '1px solid #FADBD8', borderRadius: 14, background: '#FDF2F1' }}
-                    >
-                      Edit
-                    </Link>
+                  <div className="prof-itin-actions">
+                    <Link href="/itinerary" className="prof-itin-edit">Edit</Link>
                     <button
                       onClick={() => removeItinerary(it.itinerary_id)}
                       className="saved-dl"
@@ -235,17 +219,13 @@ export default function Profile() {
           <div className="prof-card">
             <div className="prof-card-head">
               Saved Spots
-              <Link href="/attractions" style={{ fontSize: 12, color: '#B5271A', fontFamily: 'inherit', fontWeight: 500, textDecoration: 'none' }}>
-                Browse more
-              </Link>
+              <Link href="/attractions" className="auth-link" style={{ fontSize: 12, textDecoration: 'none' }}>Browse more</Link>
             </div>
 
             {favourites.length === 0 ? (
-              <div style={{ padding: '24px 20px', textAlign: 'center' }}>
-                <p style={{ fontSize: 13, color: '#7A6A58', marginBottom: 12 }}>No saved spots yet.</p>
-                <Link href="/attractions" style={{ background: '#B5271A', color: '#fff', borderRadius: 20, padding: '8px 20px', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
-                  Explore attractions →
-                </Link>
+              <div className="prof-empty">
+                <p className="empty-state-text">No saved spots yet.</p>
+                <Link href="/attractions" className="empty-state-link">Explore attractions →</Link>
               </div>
             ) : (
               favourites.map(fav => (
@@ -253,7 +233,6 @@ export default function Profile() {
                   key={fav.favourite_id}
                   href={`/attractions/${fav.attraction?.attraction_id}`}
                   className="saved-row"
-                  style={{ textDecoration: 'none' }}
                 >
                   {/* Image */}
                   <div className="saved-img">
@@ -265,21 +244,21 @@ export default function Profile() {
                   </div>
 
                   {/* Info */}
-                  <div style={{ flex: 1 }}>
+                  <div className="prof-fav-meta">
                     <div className="saved-name">{fav.attraction?.name_en}</div>
                     <div className="saved-meta">
                       {fav.attraction?.name_zh}
                       {fav.attraction?.city?.name_en ? ` · ${fav.attraction.city.name_en}` : ''}
                       {fav.attraction?.category?.name ? ` · ${fav.attraction.category.name}` : ''}
                     </div>
-                    <div style={{ fontSize: 11, color: '#BFB5A8', marginTop: 2 }}>
+                    <div className="prof-fav-save-date">
                       Saved {new Date(fav.saved_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
                   </div>
 
                   {/* Fee + remove */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: fav.attraction?.entrance_fee === 0 ? '#1A6B2E' : '#3D2E1E' }}>
+                  <div className="prof-fav-side">
+                    <span className={`prof-fav-fee${fav.attraction?.entrance_fee === 0 ? ' free' : ''}`}>
                       {fav.attraction?.entrance_fee === 0 ? 'Free' : `¥${fav.attraction?.entrance_fee}`}
                     </span>
                     <button

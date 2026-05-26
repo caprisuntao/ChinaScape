@@ -76,85 +76,36 @@ export default function LanguagePage() {
   return (
     <div className="screen active">
       {/* Navigation Top Bar */}
-      <div className="detail-bar" style={{ padding: '0 32px' }}>
+      <div className="detail-bar">
         <Link href="/cultural" className="detail-action">← Back to Cultural Guide</Link>
-        <div style={{ padding: '14px 0', fontFamily: "'Noto Serif SC', serif", fontSize: 17, fontWeight: 700 }}>
-          Language Flashcards
-        </div>
+        <div className="detail-bar-title">Language Flashcards</div>
       </div>
 
-      {/* Main Content Area */}
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 32px' }}>
+      <div className="page-header">
         <div style={{ marginBottom: '40px' }}>
-          <h1 style={{ fontFamily: "'Noto Serif SC', serif", fontSize: '32px', color: '#3D2E1E', marginBottom: '8px' }}>
-            Language Flashcards
-          </h1>
-          <p style={{ fontSize: '16px', color: '#7A6A58' }}>
+          <h1 className="page-heading">Language Flashcards</h1>
+          <p className="page-subheading">
             Common Mandarin phrases for everyday travel use. Click a card to reveal the translation.
           </p>
         </div>
 
-        {/* Flashcard Grid (renders partitioned current items) */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
-          gap: '20px',
-          minHeight: '340px' // Keeps height relatively stable across page switches
-        }}>
+        <div className="flash-grid">
           {currentItems.map((phrase) => {
             const isFlipped = flippedCards[phrase.id];
-
             return (
-              <div 
+              <div
                 key={phrase.id}
                 onClick={() => toggleCard(phrase.id)}
-                style={{
-                  background: isFlipped ? '#B5271A' : '#FAF7F2',
-                  border: isFlipped ? '1px solid #B5271A' : '1px solid #E8E0D4',
-                  color: isFlipped ? '#FFFFFF' : '#3D2E1E',
-                  borderRadius: '12px',
-                  padding: '30px 20px',
-                  minHeight: '160px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-                  position: 'relative'
-                }}
+                className={`flash-card${isFlipped ? ' flipped' : ''}`}
               >
-                {/* Category Label */}
-                <div style={{
-                  position: 'absolute',
-                  top: '12px',
-                  left: '12px',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  opacity: 0.6
-                }}>
-                  {phrase.category}
-                </div>
-
+                <div className="flash-card-cat">{phrase.category}</div>
                 {isFlipped ? (
-                  // Back of card (Chinese)
-                  <div style={{ animation: 'fadeIn 0.3s' }}>
-                    <div style={{ fontSize: '32px', fontFamily: "'Noto Serif SC', serif", fontWeight: 700, marginBottom: '8px' }}>
-                      {phrase.zh}
-                    </div>
-                    <div style={{ fontSize: '16px', opacity: 0.9 }}>
-                      {phrase.pinyin}
-                    </div>
+                  <div className="fade-in">
+                    <div className="flash-card-zh">{phrase.zh}</div>
+                    <div className="flash-card-pinyin">{phrase.pinyin}</div>
                   </div>
                 ) : (
-                  // Front of card (English)
-                  <div style={{ fontSize: '18px', fontWeight: 600, animation: 'fadeIn 0.3s' }}>
-                    {phrase.en}
-                  </div>
+                  <div className="flash-card-en fade-in">{phrase.en}</div>
                 )}
               </div>
             );
@@ -163,33 +114,14 @@ export default function LanguagePage() {
 
         {/* --- Pagination UI Controls --- */}
         {totalPages > 1 && (
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            gap: '8px', 
-            marginTop: '40px' 
-          }}>
-            {/* Previous Button */}
+          <div className="pagination">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '6px',
-                border: '1px solid #E8E0D4',
-                background: currentPage === 1 ? '#F5F5F5' : '#FAF7F2',
-                color: currentPage === 1 ? '#A0A0A0' : '#3D2E1E',
-                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                fontSize: '14px',
-                fontWeight: 600,
-                transition: 'all 0.2s'
-              }}
+              className="pagination-btn"
             >
               ← Prev
             </button>
-
-            {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, index) => {
               const pageNum = index + 1;
               const isActive = currentPage === pageNum;
@@ -197,52 +129,22 @@ export default function LanguagePage() {
                 <button
                   key={pageNum}
                   onClick={() => handlePageChange(pageNum)}
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '6px',
-                    border: isActive ? '1px solid #B5271A' : '1px solid #E8E0D4',
-                    background: isActive ? '#B5271A' : '#FAF7F2',
-                    color: isActive ? '#FFFFFF' : '#3D2E1E',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    transition: 'all 0.2s'
-                  }}
+                  className={`pagination-num${isActive ? ' active' : ''}`}
                 >
                   {pageNum}
                 </button>
               );
             })}
-
-            {/* Next Button */}
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '6px',
-                border: '1px solid #E8E0D4',
-                background: currentPage === totalPages ? '#F5F5F5' : '#FAF7F2',
-                color: currentPage === totalPages ? '#A0A0A0' : '#3D2E1E',
-                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                fontSize: '14px',
-                fontWeight: 600,
-                transition: 'all 0.2s'
-              }}
+              className="pagination-btn"
             >
               Next →
             </button>
           </div>
         )}
-
-        {/* CSS for the fade-in animation when flipping */}
-        <style dangerouslySetInnerHTML={{__html: `
-          @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-          }
-        `}} />
+      </div>
       </div>
     </div>
   );

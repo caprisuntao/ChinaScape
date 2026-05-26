@@ -20,22 +20,20 @@ export default function ResetPassword() {
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: '100px auto', padding: '20px' }}>
-      <h2 style={{ fontFamily: 'serif', color: '#B5271A' }}>Enter New Password</h2>
-      <form onSubmit={handleUpdate} style={{ marginTop: 20 }}>
-        <input 
-          type="password" 
-          placeholder="New Password (min 6 chars)" 
-          value={password} 
+    <div className="auth-page-simple">
+      <h2 className="auth-title-simple">Enter New Password</h2>
+      <form onSubmit={handleUpdate} className="auth-form">
+        <input
+          type="password"
+          placeholder="New Password (min 6 chars)"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '8px', border: '1px solid #ddd' }}
+          className="auth-form-input"
         />
-        <button type="submit" style={{ width: '100%', background: '#B5271A', color: '#fff', padding: '12px', border: 'none', borderRadius: '24px', cursor: 'pointer' }}>
-          Update Password
-        </button>
+        <button type="submit" className="auth-form-btn">Update Password</button>
       </form>
-      {message && <p style={{ marginTop: 15 }}>{message}</p>}
+      {message && <p className="auth-form-msg">{message}</p>}
     </div>
   )
 }
