@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Profile() {
   const [user, setUser] = useState(null)
@@ -64,6 +65,7 @@ export default function Profile() {
     }
 
     fetchAll()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function handleSaveName() {
@@ -236,9 +238,12 @@ export default function Profile() {
                 >
                   {/* Image */}
                   <div className="saved-img">
-                    <img
+                    <Image
                       src={fav.attraction?.image_url || 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'}
                       alt={fav.attraction?.name_en}
+                      width={120}
+                      height={90}
+                      unoptimized
                       onError={e => e.target.src = 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'}
                     />
                   </div>

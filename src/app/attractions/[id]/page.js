@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 
 // --- Caching Configuration ---
 const CACHE_PREFIX = 'chinascape_detail_'
@@ -43,20 +44,15 @@ export default function AttractionDetailPage() {
   const supabase = createClient()
   const { id } = useParams()
   const router = useRouter()
-  
+
   const [attraction, setAttraction] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState(false)
   const [user, setUser] = useState(null)
   const [toast, setToast] = useState('')
-  
-  // FIXED: Added the missing state variable for cache tracking
-  const [cacheStatus, setCacheStatus] = useState('') 
 
-  useEffect(() => {
-    fetchAttraction()
-    checkUser()
-  }, [id])
+  // FIXED: Added the missing state variable for cache tracking
+  const [cacheStatus, setCacheStatus] = useState('')
 
   async function fetchAttraction() {
     setLoading(true)
@@ -77,9 +73,9 @@ export default function AttractionDetailPage() {
       .eq('attraction_id', id)
       .single()
 
-    if (error) { 
+    if (error) {
       router.push('/attractions')
-      return 
+      return
     }
 
     setAttraction(data)
@@ -91,23 +87,29 @@ export default function AttractionDetailPage() {
   async function checkUser() {
     const { data: { user } } = await supabase.auth.getUser()
     setUser(user)
-    
+
     if (user) {
       const { data } = await supabase
         .from('favourite')
         .select('favourite_id')
         .eq('attraction_id', id)
         .eq('user_id', user.id)
-        .maybeSingle() 
-      
+        .maybeSingle()
+
       setSaved(!!data)
     }
   }
 
+   
+  useEffect(() => {
+    fetchAttraction()
+    checkUser()
+  }, [id])
+
   async function handleSave() {
-    if (!user) { 
+    if (!user) {
       router.push('/login')
-      return 
+      return
     }
 
     if (saved) {
@@ -125,7 +127,7 @@ export default function AttractionDetailPage() {
       const { error } = await supabase
         .from('favourite')
         .insert({ user_id: user.id, attraction_id: id })
-      
+
       if (!error) {
         setSaved(true)
         showToast('Saved to favourites!')
@@ -145,9 +147,12 @@ export default function AttractionDetailPage() {
     <div>
       {/* Hero section */}
       <div className="detail-hero">
-        <img
+        <Image
           src={attraction.image_url || 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1200'}
           alt={attraction.name_en}
+          width={1200}
+          height={600}
+          unoptimized
         />
         <div className="detail-hero-overlay" />
         <div className="detail-hero-text">

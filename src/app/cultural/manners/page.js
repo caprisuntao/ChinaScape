@@ -17,7 +17,7 @@ export default function MannersPage() {
         </div>
 
         <div className="manners-stack">
-          
+
           {/* Section 1: Dining */}
           <div className="manners-section">
             <h2 className="manners-section-title">🥢 Dining & Table Manners</h2>
@@ -32,7 +32,7 @@ export default function MannersPage() {
                 <strong>Pouring Tea:</strong> If someone fills your tea cup, show appreciation by lightly tapping your index and middle fingers twice on the table near the cup. This is a traditional silent gesture of thanks.
               </li>
               <li>
-                <strong>The Last Piece:</strong> It is polite to leave a tiny bit of food on the communal plates at the end of a meal. Clearing every single scrap can unintentionally imply that your host didn't provide enough food to fill you up.
+                <strong>The Last Piece:</strong> It is polite to leave a tiny bit of food on the communal plates at the end of a meal. Clearing every single scrap can unintentionally imply that your host didn&rsquo;t provide enough food to fill you up.
               </li>
             </ul>
           </div>
@@ -42,10 +42,10 @@ export default function MannersPage() {
             <h2 className="manners-section-title">🍻 Toasting & Drinking Culture</h2>
             <ul className="manners-list">
               <li>
-                <strong>Humility in Clinking:</strong> When clinking glasses for a toast, try to ensure the rim of your glass is physically *lower* than the rim of your host's or elder's glass. This is a deeply respected sign of modesty.
+                <strong>Humility in Clinking:</strong> When clinking glasses for a toast, try to ensure the rim of your glass is physically *lower* than the rim of your host&rsquo;s or elder&rsquo;s glass. This is a deeply respected sign of modesty.
               </li>
               <li>
-                <strong>Meaning of "Ganbei":</strong> When someone says *Gānbēi* (干杯), it literally translates to "dry glass." While you don't always have to chug your drink, it is expected that you take a generous sip after clinking.
+                <strong>Meaning of &ldquo;Ganbei&rdquo;:</strong> When someone says *Gānbēi* (干杯), it literally translates to &ldquo;dry glass.&rdquo; While you don&rsquo;t always have to chug your drink, it is expected that you take a generous sip after clinking.
               </li>
               <li>
                 <strong>Reciprocal Toasting:</strong> If someone goes out of their way to toast you individually, make sure to find an opportunity later in the evening to return the favor by raising a glass to them.
@@ -55,10 +55,10 @@ export default function MannersPage() {
 
           {/* Section 3: Social Customs */}
           <div className="manners-section">
-            <h2 className="manners-section-title">🤝 Social Interactions & "Face"</h2>
+            <h2 className="manners-section-title">🤝 Social Interactions & &ldquo;Face&rdquo;</h2>
             <ul className="manners-list">
               <li>
-                <strong>Understanding "Mianzi" (Face):</strong> Causing someone public embarrassment or aggressively arguing with service workers will cause them to "lose face." Always resolve misunderstandings calmly and politely.
+                <strong>Understanding &ldquo;Mianzi&rdquo; (Face):</strong> Causing someone public embarrassment or aggressively arguing with service workers will cause them to &ldquo;lose face.&rdquo; Always resolve misunderstandings calmly and politely.
               </li>
               <li>
                 <strong>Two-Handed Respect:</strong> When handing over or receiving an object of value—such as your mobile phone, a business card, cash, or a gift—always use both hands.
@@ -67,7 +67,7 @@ export default function MannersPage() {
                 <strong>Greetings:</strong> A nod and a polite smile are standard greetings. Handshakes are common but tend to be gentler than western styles.
               </li>
               <li>
-                <strong>Visiting Someone's Home:</strong> Always remove your shoes at the front doorway. Most hosts will immediately hand you a fresh pair of indoor slippers (*tuōxié*) to wear.
+                <strong>Visiting Someone&rsquo;s Home:</strong> Always remove your shoes at the front doorway. Most hosts will immediately hand you a fresh pair of indoor slippers (*tuōxié*) to wear.
               </li>
             </ul>
           </div>
@@ -77,7 +77,7 @@ export default function MannersPage() {
             <h2 className="manners-section-title">📱 Public Spaces & Digital Culture</h2>
             <ul className="manners-list">
               <li>
-                <strong>Personal Space Expectations:</strong> China's cities are incredibly populous. In subway lines, train stations, and popular markets, pushing and bumping are common and not considered malicious. Don't take tight quarters or bustling crowds as personal offenses.
+                <strong>Personal Space Expectations:</strong> China&rsquo;s cities are incredibly populous. In subway lines, train stations, and popular markets, pushing and bumping are common and not considered malicious. Don&rsquo;t take tight quarters or bustling crowds as personal offenses.
               </li>
               <li>
                 <strong>Cashless Patience:</strong> While cash is legally required to be accepted, mobile apps (Alipay and WeChat Pay) dominate daily transactions. Be patient if vendors take a moment to look for change, as physical currency is rarely used by locals.
@@ -102,7 +102,7 @@ export default function MannersPage() {
                 <strong>Temples & Thresholds:</strong> When visiting historical Buddhist or Taoist temples, do not step directly *on* the wooden raised thresholds of doorways. Always step cleanly over them.
               </li>
               <li>
-                <strong>Sensitive Photography:</strong> Never take photos of military structures, police checkpoints, border areas, or government buildings. Inside temples, look out for "No Photography" signs, as taking pictures of specific sacred Buddha statues is strictly forbidden.
+                <strong>Sensitive Photography:</strong> Never take photos of military structures, police checkpoints, border areas, or government buildings. Inside temples, look out for &ldquo;No Photography&rdquo; signs, as taking pictures of specific sacred Buddha statues is strictly forbidden.
               </li>
             </ul>
           </div>

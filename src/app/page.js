@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
+import Image from 'next/image'
 
 // Cache the featured attractions in the browser for 5 minutes
 const CACHE_KEY = 'chinascape_featured_attractions'
@@ -41,11 +42,7 @@ export default function Home() {
   const supabase = createClient()
   const [featured, setFeatured] = useState([])
   const [loading, setLoading] = useState(true)
-  const [cacheStatus, setCacheStatus] = useState('') 
-
-  useEffect(() => {
-    fetchFeaturedAttractions()
-  }, [])
+  const [cacheStatus, setCacheStatus] = useState('')
 
   async function fetchFeaturedAttractions() {
     setLoading(true)
@@ -73,22 +70,27 @@ export default function Home() {
     setLoading(false)
   }
 
+   
+  useEffect(() => {
+    fetchFeaturedAttractions()
+  }, [])
+
   return (
     <div className="screen active">
       <div className="hero-band">
         <div className="hero-text">
           <div className="hero-title">Discover China,<br/>Your Way</div>
-          <div className="hero-sub">From the Great Wall to misty karst mountains — plan your perfect journey through China's most iconic destinations.</div>
+          <div className="hero-sub">From the Great Wall to misty karst mountains — plan your perfect journey through China&rsquo;s most iconic destinations.</div>
           <div className="hero-badges">
             <div className="hero-badge">Beijing</div>
             <div className="hero-badge">Shanghai</div>
-            <div className="hero-badge">Xi'an</div>
+            <div className="hero-badge">Xi&rsquo;an</div>
             <div className="hero-badge">Guilin</div>
             <div className="hero-badge">Chengdu</div>
           </div>
         </div>
         <div className="hero-img">
-          <img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=760&q=80" alt="Great Wall of China" />
+          <Image src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=760&q=80" alt="Great Wall of China" width={760} height={500} priority />
         </div>
       </div>
 
@@ -96,14 +98,14 @@ export default function Home() {
         <div className="home-main">
           <div className="qa-grid">
             <Link href="/itinerary" className="qa-card">
-              <div className="qa-img"><img src="https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=200&q=80" alt="Itinerary" /></div>
+              <div className="qa-img"><Image src="https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=200&q=80" alt="Itinerary" width={200} height={150} /></div>
               <div>
                 <div className="qa-label">Itinerary Planner</div>
                 <div className="qa-sub">Build your day-by-day journey</div>
               </div>
             </Link>
             <Link href="/cultural" className="qa-card">
-              <div className="qa-img"><img src="https://images.unsplash.com/photo-1537819191377-d3305ffddce4?w=200&q=80" alt="Cultural" /></div>
+              <div className="qa-img"><Image src="https://images.unsplash.com/photo-1537819191377-d3305ffddce4?w=200&q=80" alt="Cultural" width={200} height={150} /></div>
               <div>
                 <div className="qa-label">Cultural Guide</div>
                 <div className="qa-sub">Etiquette, food & language</div>
@@ -122,7 +124,7 @@ export default function Home() {
               ⚡ Data {cacheStatus}
             </p>
           )}
-          
+
           <div className="attractions-grid">
             {loading ? (
               <p>Loading attractions...</p>
@@ -133,7 +135,7 @@ export default function Home() {
                 // Use attraction_id as defined in your schema
                 <Link href={`/attractions/${a.attraction_id}`} key={a.attraction_id} className="acard">
                   <div className="acard-img">
-                    <img src={a.image_url || 'https://via.placeholder.com/400'} alt={a.name_en} />
+                    <Image src={a.image_url || 'https://via.placeholder.com/400'} alt={a.name_en} width={400} height={300} unoptimized />
                   </div>
                   <div className="acard-body">
                     <div className="acard-name">{a.name_en}</div>
@@ -153,11 +155,11 @@ export default function Home() {
             <div className="side-card-head">Trending This Season</div>
             {/* You can also fetch these or keep them static for now */}
             <Link href="/attractions/bf085b9c-6ba5-4602-8916-f7034df25796" className="side-item">
-              <div className="side-item-img"><img src="https://images.unsplash.com/photo-1640100385267-4b935d8ef86c?w=120&q=70" alt="West Lake" /></div>
+              <div className="side-item-img"><Image src="https://images.unsplash.com/photo-1640100385267-4b935d8ef86c?w=120&q=70" alt="West Lake" width={120} height={90} /></div>
               <div><div className="side-item-name">West Lake</div><div className="side-item-meta">Hangzhou — Spring blossoms</div></div>
             </Link>
             <Link href="/attractions/f195b1dc-3c74-4719-bf71-5ea729dfd6a4" className="side-item">
-              <div className="side-item-img"><img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70" alt="Great Wall" /></div>
+              <div className="side-item-img"><Image src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70" alt="Great Wall" width={120} height={90} /></div>
               <div><div className="side-item-name">Great Wall</div><div className="side-item-meta">Beijing — Best in autumn</div></div>
             </Link>
           </div>

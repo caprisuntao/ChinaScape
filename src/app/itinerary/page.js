@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
+import Image from 'next/image'
 
 // ── Starter templates ────────────────────────────────────────────────────────
 const TEMPLATES = {
@@ -17,7 +18,7 @@ const TEMPLATES = {
     }]
   },
   '2-day': {
-    title: 'Beijing & Xi\'an Classic',
+    title: 'Beijing & Xi&rsquo;an Classic',
     days: [
       {
         day: 1, city: 'Beijing',
@@ -77,6 +78,7 @@ export default function ItineraryPage() {
   const [activeTab, setActiveTab] = useState('builder') // builder | saved
   const [user, setUser] = useState(null)
 
+   
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => setUser(user))
     fetchAttractions()
@@ -390,7 +392,7 @@ export default function ItineraryPage() {
                     >
                       <span className="act-drag" title="Drag to reorder">☰</span>
                       <div className="act-img">
-                        <img src={item.image} alt={item.name} onError={e => e.target.src = 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} />
+                        <Image src={item.image} alt={item.name} width={120} height={90} unoptimized onError={e => e.target.src = 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} />
                       </div>
                       <div style={{ flex: 1 }}>
                         <div className="act-name">{item.name}</div>
@@ -453,7 +455,7 @@ export default function ItineraryPage() {
                 <span> Beijing in a Day</span><span style={{ color: '#B5271A' }}>›</span>
               </button>
               <button onClick={() => loadTemplate('2-day')} className="itin-btn itin-template-btn">
-                <span> Beijing & Xi'an Classic</span><span style={{ color: '#B5271A' }}>›</span>
+                <span> Beijing & Xi&rsquo;an Classic</span><span style={{ color: '#B5271A' }}>›</span>
               </button>
             </div>
 
@@ -504,7 +506,7 @@ export default function ItineraryPage() {
                   className="picker-item"
                 >
                   <div className="picker-item-img">
-                    <img src={a.image_url || 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} alt={a.name_en} onError={e => e.target.src = 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} />
+                    <Image src={a.image_url || 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} alt={a.name_en} width={120} height={90} unoptimized onError={e => e.target.src = 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} />
                   </div>
                   <div className="picker-item-info">
                     <div className="picker-item-name">{a.name_en}</div>

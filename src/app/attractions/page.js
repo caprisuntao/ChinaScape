@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const PAGE_SIZE = 8
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes in milliseconds
@@ -49,6 +50,7 @@ function AttractionsContent() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
 
+   
   useEffect(() => {
     setSearch(initialQuery)
     fetchCategories()
@@ -184,9 +186,12 @@ function AttractionsContent() {
             {attractions.map(attraction => (
               <Link key={attraction.attraction_id} href={`/attractions/${attraction.attraction_id}`} className="acard">
                 <div className="acard-img">
-                  <img
+                  <Image
                     src={attraction.image_url || 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=400'}
                     alt={attraction.name_en}
+                    width={400}
+                    height={300}
+                    unoptimized
                     onError={e => e.target.src = 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=400'}
                   />
                 </div>

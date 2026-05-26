@@ -223,7 +223,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 
 @media (max-width: 768px) {
   .attractions-grid { grid-template-columns: 1fr; }
-  .home-body { grid-template-columns: 1fr; }
+  .home-body { grid-template-columns: 1fr; padding: 20px 16px; }
+  .qa-grid { grid-template-columns: 1fr; }
   .detail-body { grid-template-columns: 1fr; padding: 20px 16px; }
   .profile-page { grid-template-columns: 1fr; padding: 16px; }
   .itin-page { grid-template-columns: 1fr; }

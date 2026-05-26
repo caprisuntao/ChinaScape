@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function CulturalPage() {
   return (
@@ -15,10 +16,10 @@ export default function CulturalPage() {
         </div>
 
         <div className="cultural-grid">
-          
+
           <Link href="/cultural/manners" className="guide-card">
             <div className="guide-img">
-              <img src="https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=240&q=80" alt="Etiquette" />
+              <Image src="https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=240&q=80" alt="Etiquette" width={240} height={160} />
             </div>
             <div className="guide-text">
               <div className="guide-name">Etiquette Tips</div>
@@ -29,7 +30,7 @@ export default function CulturalPage() {
 
           <Link href="/cultural/food" className="guide-card">
             <div className="guide-img">
-              <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=240&q=80" alt="Food" />
+              <Image src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=240&q=80" alt="Food" width={240} height={160} />
             </div>
             <div className="guide-text">
               <div className="guide-name">Must-Try Food</div>
@@ -40,7 +41,7 @@ export default function CulturalPage() {
 
           <Link href="/cultural/language" className="guide-card">
             <div className="guide-img">
-              <img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=240&q=80" alt="Language" />
+              <Image src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=240&q=80" alt="Language" width={240} height={160} />
             </div>
             <div className="guide-text">
               <div className="guide-name">Language Flashcards</div>

@@ -33,6 +33,7 @@ export default function Navbar() {
   }, [supabase, router])
 
   // Close mobile menu on route change
+   
   useEffect(() => {
     setMenuOpen(false)
   }, [pathname])
