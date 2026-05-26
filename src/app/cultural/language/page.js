@@ -145,7 +145,6 @@ export default function LanguagePage() {
           </div>
         )}
       </div>
-      </div>
     </div>
   );
 }
