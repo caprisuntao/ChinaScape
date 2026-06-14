@@ -44,36 +44,33 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [cacheStatus, setCacheStatus] = useState('')
 
-  async function fetchFeaturedAttractions() {
-    setLoading(true)
-    // Fetching the top 6 attractions and joining city/category info
-    // Check cache first
-    const cached = getCachedData()
-    if (cached) {
-      setFeatured(cached)
-      setLoading(false)
-      setCacheStatus('served from cache')
-      return
-    }
 
-    // No cache — fetch from Supabase
-    const { data, error } = await supabase
-      .from('attraction')
-      .select('*, city(name_en), category(name)')
-      .limit(6)
-
-    if (!error) {
-      setFeatured(data || [])
-      setCachedData(data || [])
-      setCacheStatus('fetched from database')
-    }
-    setLoading(false)
-  }
-
-   
   useEffect(() => {
-    fetchFeaturedAttractions()
-  }, [])
+    async function loadFeatured() {
+      setLoading(true)
+
+      const cached = getCachedData()
+      if (cached) {
+        setFeatured(cached)
+        setLoading(false)
+        setCacheStatus('served from cache')
+        return
+      }
+
+      const { data, error } = await supabase
+        .from('attraction')
+        .select('*, city(name_en), category(name)')
+        .limit(6)
+
+      if (!error) {
+        setFeatured(data || [])
+        setCachedData(data || [])
+        setCacheStatus('fetched from database')
+      }
+      setLoading(false)
+    }
+    loadFeatured()
+  }, [supabase])
 
   return (
     <div className="screen active">

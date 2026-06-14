@@ -50,25 +50,26 @@ function AttractionsContent() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
 
-   
-  useEffect(() => {
-    setSearch(initialQuery)
-    fetchCategories()
-    // Reset to page 1 when a new search comes from the top bar
-    setCurrentPage(1)
-    fetchAttractions('All', initialQuery, 1)
-  }, [initialQuery])
 
-  async function fetchCategories() {
-    const CATEGORY_KEY = 'chinascape_categories'
-    const cachedCategories = getCachedData(CATEGORY_KEY)
-    if (cachedCategories) {
-      setCategories(cachedCategories.data || [])
-      return
+  useEffect(() => {
+    async function syncFromQuery() {
+      setSearch(initialQuery)
+      setCurrentPage(1)
+
+      const CATEGORY_KEY = 'chinascape_categories'
+      const cachedCategories = getCachedData(CATEGORY_KEY)
+      if (cachedCategories) {
+        setCategories(cachedCategories.data || [])
+      } else {
+        const { data } = await supabase.from('category').select('*')
+        setCategories(data || [])
+      }
+
+      fetchAttractions('All', initialQuery, 1)
     }
-    const { data } = await supabase.from('category').select('*')
-    setCategories(data || [])
-  }
+    syncFromQuery()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuery])
 
   async function fetchAttractions(categoryFilter = activeCategory, searchFilter = search, page = 1) {
     setLoading(true)

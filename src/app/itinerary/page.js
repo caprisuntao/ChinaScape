@@ -78,19 +78,22 @@ export default function ItineraryPage() {
   const [activeTab, setActiveTab] = useState('builder') // builder | saved
   const [user, setUser] = useState(null)
 
-   
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => setUser(user))
-    fetchAttractions()
-    fetchSaved()
-  }, [])
 
-  async function fetchAttractions() {
-    const { data } = await supabase
-      .from('attraction')
-      .select('*, city(*), category(*)')
-    setAttractions(data || [])
-  }
+  useEffect(() => {
+    async function load() {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+
+      const { data } = await supabase
+        .from('attraction')
+        .select('*, city(*), category(*)')
+      setAttractions(data || [])
+
+      fetchSaved()
+    }
+    load()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function fetchSaved() {
     const { data: { user } } = await supabase.auth.getUser()

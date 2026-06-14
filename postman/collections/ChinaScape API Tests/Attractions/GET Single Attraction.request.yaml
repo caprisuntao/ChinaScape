@@ -1,0 +1,17 @@
+$kind: http-request
+name: GET Single Attraction
+description: Get a single attraction by ID — replace 1 with a real attraction ID from your DB
+url: "{{baseUrl}}/api/attractions/f195b1dc-3c74-4719-bf71-5ea729dfd6a4"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status is 200', function () {
+        pm.response.to.have.status(200);
+      });
+      pm.test('Response has attraction data', function () {
+        const json = pm.response.json();
+        pm.expect(json).to.be.an('object');
+      });
+    language: text/javascript
+order: 5000

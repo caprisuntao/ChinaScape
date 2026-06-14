@@ -54,57 +54,50 @@ export default function AttractionDetailPage() {
   // FIXED: Added the missing state variable for cache tracking
   const [cacheStatus, setCacheStatus] = useState('')
 
-  async function fetchAttraction() {
-    setLoading(true)
 
-    // 1. Check Cache First
-    const cached = getCachedAttraction(id)
-    if (cached) {
-      setAttraction(cached)
-      setLoading(false)
-      setCacheStatus('served from browser cache')
-      return
-    }
-
-    // 2. Fetch from Database if no cache
-    const { data, error } = await supabase
-      .from('attraction')
-      .select('*, city(*), category(*)')
-      .eq('attraction_id', id)
-      .single()
-
-    if (error) {
-      router.push('/attractions')
-      return
-    }
-
-    setAttraction(data)
-    setCachedAttraction(id, data) // Save to cache for next time
-    setCacheStatus('fetched from live database')
-    setLoading(false)
-  }
-
-  async function checkUser() {
-    const { data: { user } } = await supabase.auth.getUser()
-    setUser(user)
-
-    if (user) {
-      const { data } = await supabase
-        .from('favourite')
-        .select('favourite_id')
-        .eq('attraction_id', id)
-        .eq('user_id', user.id)
-        .maybeSingle()
-
-      setSaved(!!data)
-    }
-  }
-
-   
   useEffect(() => {
-    fetchAttraction()
-    checkUser()
-  }, [id])
+    async function load() {
+      setLoading(true)
+
+      const cached = getCachedAttraction(id)
+      if (cached) {
+        setAttraction(cached)
+        setLoading(false)
+        setCacheStatus('served from browser cache')
+      } else {
+        const { data, error } = await supabase
+          .from('attraction')
+          .select('*, city(*), category(*)')
+          .eq('attraction_id', id)
+          .single()
+
+        if (error) {
+          router.push('/attractions')
+          return
+        }
+
+        setAttraction(data)
+        setCachedAttraction(id, data)
+        setCacheStatus('fetched from live database')
+        setLoading(false)
+      }
+
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+
+      if (user) {
+        const { data } = await supabase
+          .from('favourite')
+          .select('favourite_id')
+          .eq('attraction_id', id)
+          .eq('user_id', user.id)
+          .maybeSingle()
+
+        setSaved(!!data)
+      }
+    }
+    load()
+  }, [id, supabase, router])
 
   async function handleSave() {
     if (!user) {

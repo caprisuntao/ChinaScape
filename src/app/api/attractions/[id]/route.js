@@ -20,13 +20,13 @@ import { NextResponse } from 'next/server'
  *         description: Attraction not found
  */
 export async function GET(request, { params }) {
+  const { id } = await params
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('attraction')
-    .select('*, city(*), category(*), flashcard(*)')
-    .eq('attraction_id', params.id)
+    .select('*, city(*), category(*)')
+    .eq('attraction_id', id)
     .single()
-
   if (error) return NextResponse.json({ error: error.message }, { status: 404 })
   return NextResponse.json({ data })
 }

@@ -1,0 +1,18 @@
+$kind: http-request
+description: Search attractions by name — should return The Great Wall
+url: "{{baseUrl}}/api/attractions?search=wall"
+method: GET
+queryParams:
+  search: wall
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status is 200', function () {
+        pm.response.to.have.status(200);
+      });
+      pm.test('Results contain search term', function () {
+        const json = pm.response.json();
+        pm.expect(json).to.be.an('object');
+      });
+    language: text/javascript
+order: 2000

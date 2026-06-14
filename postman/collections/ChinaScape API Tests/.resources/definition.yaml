@@ -1,0 +1,4 @@
+$kind: collection
+description: Integration test scripts for ChinaScape API endpoints
+variables:
+  baseUrl: http://localhost:3000
