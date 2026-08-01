@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react';
 import Link from 'next/link';
+import Reveal from '@/components/Reveal';
 
 // Essential travel phrases
 const phrases = [
@@ -13,7 +14,7 @@ const phrases = [
   { id: 7, category: 'Dining & Shopping', en: 'How much is this?', pinyin: 'Zhège duōshǎo qián?', zh: '这个多少钱？' },
   { id: 8, category: 'Dining & Shopping', en: 'Too expensive!', pinyin: 'Tài guì le!', zh: '太贵了！' },
   { id: 9, category: 'Dining & Shopping', en: 'The bill, please', pinyin: 'Mǎidān', zh: '买单' },
-  
+
   // --- NEW GREETINGS & ESSENTIALS ---
   { id: 10, category: 'Greetings', en: 'Good morning', pinyin: 'Zǎoshang hǎo', zh: '早上好' },
   { id: 11, category: 'Greetings', en: 'Goodbye', pinyin: 'Zàijiàn', zh: '再见' },
@@ -50,7 +51,7 @@ const phrases = [
 
 export default function LanguagePage() {
   const [flippedCards, setFlippedCards] = useState({});
-  
+
   // --- Pagination State & Logic ---
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
@@ -74,51 +75,48 @@ export default function LanguagePage() {
   };
 
   return (
-    <div className="screen active">
-      {/* Navigation Top Bar */}
-      <div className="detail-bar">
-        <Link href="/cultural" className="detail-action">← Back to Cultural Guide</Link>
-        <div className="detail-bar-title">Language Flashcards</div>
-      </div>
-
-      <div className="page-header">
-        <div style={{ marginBottom: '40px' }}>
-          <h1 className="page-heading">Language Flashcards</h1>
-          <p className="page-subheading">
-            Common Mandarin phrases for everyday travel use. Click a card to reveal the translation.
-          </p>
+    <>
+      {/* Hero band */}
+      <section className="bg-red">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-8 md:py-10">
+          <Link href="/cultural" className="text-[12px] text-white/70 hover:text-white transition-colors duration-200">← Back to Cultural Guide</Link>
+          <h1 className="font-display text-[26px] md:text-[32px] font-bold text-white mt-3">Language Flashcards</h1>
+          <p className="mt-2 text-sm text-white/75">Common Mandarin phrases for everyday travel use — click a card to reveal the translation.</p>
         </div>
+      </section>
 
-        <div className="flash-grid">
-          {currentItems.map((phrase) => {
+      <div className="max-w-[900px] mx-auto px-4 md:px-[32px] py-8 md:py-12">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-5 min-h-[340px]">
+          {currentItems.map((phrase, i) => {
             const isFlipped = flippedCards[phrase.id];
             return (
-              <div
-                key={phrase.id}
-                onClick={() => toggleCard(phrase.id)}
-                className={`flash-card${isFlipped ? ' flipped' : ''}`}
-              >
-                <div className="flash-card-cat">{phrase.category}</div>
-                {isFlipped ? (
-                  <div className="fade-in">
-                    <div className="flash-card-zh">{phrase.zh}</div>
-                    <div className="flash-card-pinyin">{phrase.pinyin}</div>
-                  </div>
-                ) : (
-                  <div className="flash-card-en fade-in">{phrase.en}</div>
-                )}
-              </div>
+              <Reveal key={phrase.id} delay={Math.min(i, 8) * 40}>
+                <div
+                  onClick={() => toggleCard(phrase.id)}
+                  className={`rounded-card px-5 py-[30px] min-h-[160px] flex flex-col justify-center items-center text-center cursor-pointer transition-all duration-300 shadow-subtle relative hover:-translate-y-[3px] hover:shadow-card-sm ${isFlipped ? 'bg-red border-red text-white' : 'bg-white border border-paper-dkr text-ink-md'}`}
+                >
+                  <div className="absolute top-3 left-3 text-[11px] font-semibold uppercase tracking-[0.05em] opacity-60">{phrase.category}</div>
+                  {isFlipped ? (
+                    <div className="fade-in">
+                      <div className="text-[32px] font-display font-bold mb-2">{phrase.zh}</div>
+                      <div className="text-base opacity-90">{phrase.pinyin}</div>
+                    </div>
+                  ) : (
+                    <div className="text-lg font-semibold fade-in">{phrase.en}</div>
+                  )}
+                </div>
+              </Reveal>
             );
           })}
         </div>
 
         {/* --- Pagination UI Controls --- */}
         {totalPages > 1 && (
-          <div className="pagination">
+          <div className="flex justify-center items-center gap-2 mt-10">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="pagination-btn"
+              className="px-4 py-2 rounded-md border border-paper-dkr bg-paper text-ink-md cursor-pointer text-sm font-semibold disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
             >
               ← Prev
             </button>
@@ -129,7 +127,7 @@ export default function LanguagePage() {
                 <button
                   key={pageNum}
                   onClick={() => handlePageChange(pageNum)}
-                  className={`pagination-num${isActive ? ' active' : ''}`}
+                  className={`w-9 h-9 rounded-md border cursor-pointer text-sm font-semibold flex items-center justify-center ${isActive ? 'bg-red text-white border-red' : 'bg-paper text-ink-md border-paper-dkr'}`}
                 >
                   {pageNum}
                 </button>
@@ -138,13 +136,13 @@ export default function LanguagePage() {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="pagination-btn"
+              className="px-4 py-2 rounded-md border border-paper-dkr bg-paper text-ink-md cursor-pointer text-sm font-semibold disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
             >
               Next →
             </button>
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

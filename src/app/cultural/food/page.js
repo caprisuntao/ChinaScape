@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react';
 import Link from 'next/link';
+import Reveal from '@/components/Reveal';
 
 const dishes = [
   {
@@ -119,62 +120,59 @@ export default function FoodPage() {
   }
 
   return (
-    <div className="screen active">
-      {/* Navigation Top Bar */}
-      <div className="detail-bar">
-        <Link href="/cultural" className="detail-action">← Back to Cultural Guide</Link>
-        <div className="detail-bar-title">Must-Try Foods</div>
-      </div>
-
-      <div className="page-header">
-        <div style={{ marginBottom: '40px' }}>
-          <h1 className="page-heading"> Local Chinese Delicacies</h1>
-          <p className="page-subheading">
-            China&apos;s culinary landscape is vast and deeply regional. Here are the must-try dishes
-            every traveler should seek out — from street stalls to legendary restaurants.
-          </p>
+    <>
+      {/* Hero band */}
+      <section className="bg-red">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-8 md:py-10">
+          <Link href="/cultural" className="text-[12px] text-white/70 hover:text-white transition-colors duration-200">← Back to Cultural Guide</Link>
+          <h1 className="font-display text-[26px] md:text-[32px] font-bold text-white mt-3">Must-Try Foods</h1>
+          <p className="mt-2 text-sm text-white/75">Local Chinese delicacies — from street stalls to legendary restaurants.</p>
         </div>
+      </section>
 
-        <div className="food-search-wrap">
+      <div className="max-w-[900px] mx-auto px-4 md:px-[32px] py-8 md:py-12">
+        <div className="mb-[28px]">
           <input
             autoFocus
             value={search}
             onChange={e => handleSearch(e.target.value)}
             placeholder="Search by dish name or city…"
-            className="food-search-input"
+            className="w-full px-[18px] py-3.5 border border-paper-dkr rounded-full text-sm outline-none text-ink-md bg-white focus:border-red transition-colors"
           />
         </div>
 
         {currentItems.length === 0 ? (
-          <div className="empty-state" style={{ fontSize: '14px' }}>
+          <div className="text-center py-[60px] text-ink-lt text-sm">
             No dishes found matching &ldquo;{search}&rdquo;
           </div>
         ) : (
-          <div className="food-list">
+          <div className="flex flex-col gap-6">
             {currentItems.map((dish, i) => (
-              <div key={i} className="food-card">
-                <div className="food-card-hd">
-                  <h2 className="food-card-name">{dish.name}</h2>
-                  <span className="food-card-zh">{dish.name_zh}</span>
-                  <span className="food-card-origin">{dish.origin}</span>
+              <Reveal key={i} delay={Math.min(i, 5) * 60}>
+                <div className="bg-white rounded-card p-6 border border-paper-dkr transition-all duration-200 hover:border-red hover:shadow-card-sm">
+                  <div className="flex items-baseline gap-[10px] mb-2">
+                    <h2 className="text-lg font-bold text-red">{dish.name}</h2>
+                    <span className="text-[15px] text-ink-lt font-display">{dish.name_zh}</span>
+                    <span className="text-[11px] bg-paper-dkr text-ink-md rounded-full px-[10px] py-[2px] ml-auto whitespace-nowrap">{dish.origin}</span>
+                  </div>
+                  <p className="text-sm text-ink-md leading-[1.7] mb-3">{dish.description}</p>
+                  <div className="bg-paper rounded-card px-3.5 py-[10px] border-l-[3px] border-red text-[13px] text-ink-md leading-relaxed">
+                    <span className="font-semibold text-red">Where to try:</span>{' '}
+                    {dish.mustTry}
+                  </div>
                 </div>
-                <p className="food-card-desc">{dish.description}</p>
-                <div className="food-card-tip">
-                  <span className="food-tip-label"> Where to try:</span>{' '}
-                  {dish.mustTry}
-                </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         )}
 
         {/* ── Pagination Controls ────────────────────────────────────────── */}
         {totalPages > 1 && (
-          <div className="pagination">
+          <div className="flex justify-center items-center gap-2 mt-10">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="pagination-btn"
+              className="px-4 py-2 rounded-md border border-paper-dkr bg-paper text-ink-md cursor-pointer text-sm font-semibold disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
             >
               ← Prev
             </button>
@@ -185,7 +183,7 @@ export default function FoodPage() {
                 <button
                   key={pageNum}
                   onClick={() => handlePageChange(pageNum)}
-                  className={`pagination-num${isActive ? ' active' : ''}`}
+                  className={`w-9 h-9 rounded-md border cursor-pointer text-sm font-semibold flex items-center justify-center ${isActive ? 'bg-red text-white border-red' : 'bg-paper text-ink-md border-paper-dkr'}`}
                 >
                   {pageNum}
                 </button>
@@ -194,19 +192,19 @@ export default function FoodPage() {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="pagination-btn"
+              className="px-4 py-2 rounded-md border border-paper-dkr bg-paper text-ink-md cursor-pointer text-sm font-semibold disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
             >
               Next →
             </button>
           </div>
         )}
 
-        <div className="food-footer-tip">
-          <strong> Pro Tip:</strong> When in China, look for restaurants that are busy with locals —
+        <div className="mt-10 px-6 py-5 bg-gold-lt border border-gold rounded-card text-[13px] text-ink-md leading-[1.7] text-center">
+          <strong className="text-gold-dk">Pro Tip:</strong> When in China, look for restaurants that are busy with locals —
           it&apos;s the best sign of quality food. Don&apos;t be afraid to point at the menu
           (or at what other tables are having)!
         </div>
       </div>
-    </div>
+    </>
   );
 }

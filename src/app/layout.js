@@ -1,5 +1,6 @@
 import './globals.css';
 import Navbar from '@/components/Navbar'; // Import the new component
+import Footer from '@/components/Footer';
 
 export const metadata = {
   title: 'ChinaScape - 中国旅游',
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
           <main>
             {children}
           </main>
+          <Footer />
         </div>
       </body>
     </html>

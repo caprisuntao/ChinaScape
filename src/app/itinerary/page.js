@@ -3,6 +3,12 @@ import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
+import Reveal from '@/components/Reveal'
+import TripHero from './TripHero'
+import DayCard from './DayCard'
+import AttractionPicker from './AttractionPicker'
+import SavedCard from './SavedCard'
+import { FALLBACK_IMG } from './constants'
 
 // ── Starter templates ────────────────────────────────────────────────────────
 const TEMPLATES = {
@@ -42,25 +48,6 @@ const TRANSPORT_PER_DAY = 150
 const FOOD_PER_DAY = 120
 
 
-// ── Helper: convert any time format to HH:MM for <input type="time"> ──────────
-function toTimeInputValue(time) {
-  if (!time) return '09:00'
-  // Already in HH:MM 24-hour format
-  if (/^\d{1,2}:\d{2}$/.test(time)) {
-    return time.padStart(5, '0')
-  }
-  // Parse 12-hour format like "7:00 AM" or "1:30 PM"
-  const match = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
-  if (match) {
-    let h = parseInt(match[1])
-    const m = match[2]
-    if (match[3].toUpperCase() === 'PM' && h !== 12) h += 12
-    if (match[3].toUpperCase() === 'AM' && h === 12) h = 0
-    return `${h.toString().padStart(2, '0')}:${m}`
-  }
-  return '09:00'
-}
-
 // ── Main page ────────────────────────────────────────────────────────────────
 export default function ItineraryPage() {
   const supabase = createClient()
@@ -77,6 +64,7 @@ export default function ItineraryPage() {
   const [savedItineraries, setSavedItineraries] = useState([])
   const [activeTab, setActiveTab] = useState('builder') // builder | saved
   const [user, setUser] = useState(null)
+  const toastTimer = useRef(null)
 
 
   useEffect(() => {
@@ -107,6 +95,8 @@ export default function ItineraryPage() {
   }
 
   // ── Cost calculations ──────────────────────────────────────────────────────
+  const totalItems = days.flatMap(d => d.items).length
+  const uniqueCities = [...new Set(days.map(d => d.city).filter(Boolean))].join(', ') || '—'
   const ticketTotal = days.flatMap(d => d.items).reduce((s, i) => s + (i.fee || 0), 0)
   const transportTotal = days.length * TRANSPORT_PER_DAY
   const foodTotal = days.length * FOOD_PER_DAY
@@ -134,7 +124,7 @@ export default function ItineraryPage() {
       name_zh: attraction.name_zh,
       time: '9:00 AM',
       fee: attraction.entrance_fee || 0,
-      image: attraction.image_url || 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70',
+      image: attraction.image_url || FALLBACK_IMG,
       lat: null, lng: null,
     }
     setDays(prev => prev.map((d, i) => i === dayIdx ? { ...d, items: [...d.items, item] } : d))
@@ -187,10 +177,12 @@ export default function ItineraryPage() {
   // ── Save to Supabase ───────────────────────────────────────────────────────
   async function saveItinerary() {
     if (!user) { showToast('Please log in to save'); return }
+    if (!title.trim()) { showToast('Please give your itinerary a title'); return }
+    if (title.trim().length > 100) { showToast('Title must be under 100 characters'); return }
     setSaving(true)
     const { error } = await supabase.from('itinerary').insert({
       user_id: user.id,
-      title,
+      title: title.trim(),
       duration_days: days.length,
       is_template: false,
       metadata: { days },
@@ -211,6 +203,14 @@ export default function ItineraryPage() {
     setDays(itinerary.metadata.days)
     setActiveTab('builder')
     showToast('Loaded: ' + itinerary.title)
+  }
+
+  // ── Delete saved itinerary ─────────────────────────────────────────────────
+  async function handleDelete(id) {
+    if (!window.confirm('Delete this saved itinerary? This cannot be undone.')) return
+    await supabase.from('itinerary').delete().eq('itinerary_id', id)
+    fetchSaved()
+    showToast('Deleted')
   }
 
   // ── Offline download ───────────────────────────────────────────────────────
@@ -247,94 +247,78 @@ export default function ItineraryPage() {
 
   function showToast(msg) {
     setToast(msg)
-    setTimeout(() => setToast(''), 2800)
+    clearTimeout(toastTimer.current)
+    toastTimer.current = setTimeout(() => setToast(''), 2800)
   }
-
-  const filteredAttractions = attractions.filter(a =>
-    a.name_en.toLowerCase().includes(attrSearch.toLowerCase()) ||
-    a.city?.name_en?.toLowerCase().includes(attrSearch.toLowerCase())
-  )
 
   // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div className="itin-page-wrap">
+    <div className="min-h-screen bg-paper">
 
-      {/* Top bar */}
-      <div className="detail-bar">
-        <Link href="/" className="detail-action">← Back</Link>
-
-        {/* Editable title */}
-        {editingTitle ? (
-          <input
-            autoFocus
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            onBlur={() => setEditingTitle(false)}
-            onKeyDown={e => e.key === 'Enter' && setEditingTitle(false)}
-            className="itin-title-input"
-          />
-        ) : (
-          <div
-            onClick={() => setEditingTitle(true)}
-            className="itin-title-display"
-            title="Click to rename"
-          >
-            {title} <span className="itin-title-hint">✎</span>
-          </div>
-        )}
-
-        <div className="itin-topbar-actions">
-          <button onClick={downloadOffline} className="btn-outline"> Offline</button>
-          <button
-            onClick={saveItinerary}
-            disabled={saving}
-            className="detail-save"
-            style={{ opacity: saving ? 0.7 : 1 }}
-          >
-            {saving ? 'Saving…' : 'Save'}
-          </button>
-        </div>
-      </div>
+      {/* Hero */}
+      <TripHero
+        title={title}
+        editingTitle={editingTitle}
+        setTitle={setTitle}
+        setEditingTitle={setEditingTitle}
+        days={days}
+        grandTotal={grandTotal}
+        saving={saving}
+        onSave={saveItinerary}
+        onDownload={downloadOffline}
+        totalAttractions={totalItems}
+        uniqueCities={uniqueCities}
+      />
 
       {/* Tab bar */}
-      <div className="itin-tab-bar">
-        {['builder', 'saved'].map(tab => (
-          <button key={tab} onClick={() => setActiveTab(tab)} className={`itin-tab-btn${activeTab === tab ? ' active' : ''}`}>
-            {tab === 'builder' ? ' Builder' : ` Saved (${savedItineraries.length})`}
-          </button>
-        ))}
+      <div className="border-b border-paper-dkr bg-white">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] flex">
+          {['builder', 'saved'].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-5 py-3 text-[13px] font-medium border-b-2 border-transparent bg-transparent cursor-pointer transition-all duration-200 ${activeTab === tab ? 'text-red border-red' : 'text-ink-lt hover:text-ink-md'}`}
+            >
+              {tab === 'builder' ? 'Builder' : `Saved (${savedItineraries.length})`}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ── SAVED TAB ── */}
       {activeTab === 'saved' && (
-        <div className="itin-tab-area">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-5 md:py-[32px]">
           {!user ? (
-            <div className="empty-state">
-              <p style={{ fontSize: 15, marginBottom: 16 }}>Log in to see your saved itineraries</p>
-              <Link href="/login" className="empty-state-link" style={{ padding: '10px 24px' }}>Sign In</Link>
+            <div className="text-center py-[80px]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 text-ink-xlt mb-4" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <h3 className="font-display text-lg font-bold text-ink mb-2">Sign in to save itineraries</h3>
+              <p className="text-[13px] text-ink-lt mb-5">Your itineraries are saved to your account for access anywhere.</p>
+              <Link href="/login" className="bg-red text-white rounded-full px-6 py-[10px] text-[13px] font-semibold inline-block hover:bg-red-dk transition-colors">Sign In</Link>
             </div>
           ) : savedItineraries.length === 0 ? (
-            <div className="empty-state">No saved itineraries yet. Build one and click Save!</div>
+            <div className="text-center py-[80px]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 text-ink-xlt mb-4" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <h3 className="font-display text-lg font-bold text-ink mb-2">No saved itineraries yet</h3>
+              <p className="text-[13px] text-ink-lt mb-5">Build your first itinerary and click Save to see it here.</p>
+              <button
+                onClick={() => setActiveTab('builder')}
+                className="bg-red text-white rounded-full px-6 py-[10px] text-[13px] font-semibold cursor-pointer border-0 hover:bg-red-dk transition-colors"
+              >
+                Start building
+              </button>
+            </div>
           ) : (
-            <div className="saved-grid">
-              {savedItineraries.map(it => (
-                <div key={it.itinerary_id} className="saved-card">
-                  <div className="saved-card-title">{it.title}</div>
-                  <div className="saved-card-meta">{it.duration_days} day{it.duration_days !== 1 ? 's' : ''} · Saved {new Date(it.created_at).toLocaleDateString()}</div>
-                  <div className="saved-card-actions">
-                    <button onClick={() => loadIntoBuilder(it)} className="btn-sm-primary">Load into Builder</button>
-                    <button
-                      onClick={async () => {
-                        await supabase.from('itinerary').delete().eq('itinerary_id', it.itinerary_id)
-                        fetchSaved()
-                        showToast('Deleted')
-                      }}
-                      className="btn-sm-delete"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
+              {savedItineraries.map((it, i) => (
+                <Reveal key={it.itinerary_id} delay={i * 60}>
+                  <SavedCard itinerary={it} onLoad={loadIntoBuilder} onDelete={handleDelete} />
+                </Reveal>
               ))}
             </div>
           )}
@@ -343,188 +327,150 @@ export default function ItineraryPage() {
 
       {/* ── BUILDER TAB ── */}
       {activeTab === 'builder' && (
-        <div className="itin-page">
-
-          {/* Left — days */}
-          <div className="itin-main">
-
-
-            {/* Day cards */}
-            {days.map((day, dayIdx) => (
-              <div key={dayIdx} className="day-card">
-                <div className="day-head">
-                  <div className="day-header-row">
-                    <h3 style={{ fontFamily: "'Noto Serif SC', serif", fontSize: 14, color: '#fff' }}>Day {day.day}</h3>
-                    <input
-                      value={day.city}
-                      onChange={e => updateCity(dayIdx, e.target.value)}
-                      placeholder="City name"
-                      className="city-input"
-                    />
-                  </div>
-                  <div style={{ display: 'flex', gap: 6 }}>
+        <>
+          {/* Templates row */}
+          <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] pt-5 pb-1">
+            <Reveal>
+              <div className="flex items-baseline gap-3 mb-3">
+                <h2 className="font-display text-[15px] font-bold text-ink">Quick-start templates</h2>
+                <span className="text-[11px] text-ink-xlt hidden sm:inline">Load a ready-made itinerary</span>
+              </div>
+            </Reveal>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {Object.entries(TEMPLATES).map(([key, tpl], i) => {
+                const firstImage = tpl.days[0]?.items?.[0]?.image || FALLBACK_IMG
+                return (
+                  <Reveal key={key} delay={i * 70}>
                     <button
-                      onClick={() => setShowAttrPicker(dayIdx)}
-                      className="day-add"
-                      title="Add attraction"
-                    >+</button>
-                    {days.length > 1 && (
-                      <button
-                        onClick={() => removeDay(dayIdx)}
-                        className="btn-remove-day"
-                        title="Remove day"
-                      >×</button>
-                    )}
+                      onClick={() => loadTemplate(key)}
+                      className="flex items-center gap-4 bg-white border border-paper-dkr rounded-card p-4 text-left cursor-pointer transition-all duration-300 hover:border-red hover:-translate-y-1 hover:shadow-card w-full group"
+                    >
+                      <div className="w-[56px] h-[56px] rounded-thumb overflow-hidden shrink-0">
+                        <Image src={firstImage} alt={tpl.title} width={120} height={90} unoptimized className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm font-semibold text-ink flex items-center gap-2">
+                          {tpl.title}
+                          <span className="text-red transition-transform duration-300 group-hover:translate-x-1">→</span>
+                        </div>
+                        <div className="text-[11px] text-ink-lt mt-[3px]">
+                          {tpl.days.length} day{tpl.days.length !== 1 ? 's' : ''} · {tpl.days.map(d => d.city).join(' & ')}
+                        </div>
+                      </div>
+                    </button>
+                  </Reveal>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Builder grid */}
+          <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-5 md:py-[28px] grid grid-cols-1 md:grid-cols-[1fr_320px] gap-[24px] items-start">
+
+            {/* Left — days */}
+            <div>
+              {days.map((day, dayIdx) => (
+                <Reveal key={dayIdx} delay={dayIdx * 80} className="mb-4">
+                  <DayCard
+                    day={day}
+                    dayIndex={dayIdx}
+                    canRemove={days.length > 1}
+                    onRemoveDay={removeDay}
+                    onAddAttraction={setShowAttrPicker}
+                    onRemoveItem={removeItem}
+                    onUpdateTime={updateTime}
+                    onUpdateCity={updateCity}
+                    onDragStart={onDragStart}
+                    onDragOver={onDragOver}
+                    onDragEnd={onDragEnd}
+                    dragInfo={dragInfo}
+                  />
+                </Reveal>
+              ))}
+
+              <Reveal delay={days.length * 80}>
+                <button
+                  onClick={addDay}
+                  className="w-full py-3.5 border-2 border-dashed border-paper-dkst rounded-card bg-transparent text-ink-lt text-[13px] font-semibold cursor-pointer transition-all duration-200 hover:border-red hover:text-red hover:bg-red-xlt/30"
+                >
+                  + Add Day {days.length + 1}
+                </button>
+              </Reveal>
+            </div>
+
+            {/* Right — sidebar */}
+            <div className="flex flex-col gap-[14px]">
+
+              {/* Cost estimator */}
+              <div className="bg-white border border-paper-dkr rounded-card overflow-hidden">
+                <div className="px-[18px] py-[14px] font-display text-[15px] font-bold text-ink border-b border-paper-dk bg-paper">
+                  Cost Estimator
+                </div>
+                <div className="px-[18px] py-3">
+                  <div className="flex justify-between py-2.5 border-b border-paper-dk text-[13px]">
+                    <span className="text-ink-lt">Tickets ({totalItems} item{totalItems !== 1 ? 's' : ''})</span>
+                    <span className="font-medium">¥{ticketTotal}</span>
+                  </div>
+                  <div className="flex justify-between py-2.5 border-b border-paper-dk text-[13px]">
+                    <span className="text-ink-lt">Transport ({days.length} day{days.length !== 1 ? 's' : ''})</span>
+                    <span className="font-medium">¥{transportTotal}</span>
+                  </div>
+                  <div className="flex justify-between py-2.5 text-[13px]">
+                    <span className="text-ink-lt">Food (estimated)</span>
+                    <span className="font-medium">¥{foodTotal}</span>
                   </div>
                 </div>
+                <div className="flex justify-between items-center px-[18px] py-3 bg-red-xlt border-t border-red-lt">
+                  <span className="text-[14px] font-bold text-red">Estimated Total</span>
+                  <span className="text-[18px] font-bold text-red">¥{grandTotal}</span>
+                </div>
+                <div className="px-[18px] py-2.5 bg-paper-dk text-[10px] text-ink-xlt text-center border-t border-paper-dkr">
+                  Transport ¥{TRANSPORT_PER_DAY}/day · Food ¥{FOOD_PER_DAY}/day
+                </div>
+              </div>
 
-                {day.items.length === 0 ? (
-                  <div className="day-empty-text">
-                    Click <strong>+</strong> to add attractions to this day
+              {/* Trip summary */}
+              <div className="bg-red-xlt border border-red-lt rounded-card px-4 py-[14px]">
+                <div className="text-xs font-bold text-red mb-2">Trip Summary</div>
+                <div className="text-xs text-ink-md leading-[2.2]">
+                  <div className="flex justify-between">
+                    <span>Duration</span>
+                    <span className="font-medium">{days.length} day{days.length !== 1 ? 's' : ''}</span>
                   </div>
-                ) : (
-                  day.items.map((item, itemIdx) => (
-                    <div
-                      key={item.id + itemIdx}
-                      className="act-row"
-                      draggable
-                      onDragStart={() => onDragStart(dayIdx, itemIdx)}
-                      onDragOver={e => onDragOver(e, dayIdx, itemIdx)}
-                      onDragEnd={onDragEnd}
-                      style={{ opacity: dragInfo?.dayIdx === dayIdx && dragInfo?.itemIdx === itemIdx ? 0.4 : 1 }}
-                    >
-                      <span className="act-drag" title="Drag to reorder">☰</span>
-                      <div className="act-img">
-                        <Image src={item.image} alt={item.name} width={120} height={90} unoptimized onError={e => e.target.src = 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} />
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <div className="act-name">{item.name}</div>
-                        <div className="act-item-meta">{item.name_zh} · ¥{item.fee}</div>
-                      </div>
-                      <input
-                        type="time"
-                        value={toTimeInputValue(item.time)}
-                        onChange={e => updateTime(dayIdx, itemIdx, e.target.value)}
-                        className="act-item-time"
-                      />
-                      <button
-                        onClick={() => removeItem(dayIdx, itemIdx)}
-                        className="btn-icon"
-                        title="Remove"
-                      >×</button>
-                    </div>
-                  ))
-                )}
+                  <div className="flex justify-between">
+                    <span>Attractions</span>
+                    <span className="font-medium">{totalItems}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Cities</span>
+                    <span className="font-medium">{uniqueCities}</span>
+                  </div>
+                </div>
               </div>
-            ))}
 
-            {/* Add day button */}
-            <button onClick={addDay} className="btn-add-day">
-              + Add Day {days.length + 1}
-            </button>
-          </div>
-
-          {/* Right — sidebar */}
-          <div className="itin-side">
-
-            {/* Cost estimator */}
-            <div className="cost-card">
-              <div className="cost-title"> Cost Estimator</div>
-              <div className="cost-row">
-                <span className="cost-label"> Tickets</span>
-                <span style={{ fontWeight: 500 }}>¥{ticketTotal}</span>
+              {/* Offline tip */}
+              <div className="bg-paper-dk rounded-card p-4 text-[11px] text-ink-lt leading-[1.6]">
+                <strong className="text-ink-md">Offline mode:</strong> Download your itinerary as a JSON file for offline access anywhere.
               </div>
-              <div className="cost-row">
-                <span className="cost-label"> Transport</span>
-                <span style={{ fontWeight: 500 }}>¥{transportTotal}</span>
-              </div>
-              <div className="cost-row">
-                <span className="cost-label"> Food (est.)</span>
-                <span style={{ fontWeight: 500 }}>¥{foodTotal}</span>
-              </div>
-              <div className="cost-row cost-total-row">
-                <span>Total</span>
-                <span>¥{grandTotal}</span>
-              </div>
-              <div style={{ fontSize: 10, color: '#BFB5A8', marginTop: 8, lineHeight: 1.5 }}>
-                Transport estimated at ¥{TRANSPORT_PER_DAY}/day · Food estimated at ¥{FOOD_PER_DAY}/day
-              </div>
-            </div>
-
-            {/* Templates */}
-            <div className="template-card">
-              <div className="template-card-head"> Starter Templates</div>
-              <button onClick={() => loadTemplate('1-day')} className="itin-btn itin-template-btn">
-                <span> Beijing in a Day</span><span style={{ color: '#B5271A' }}>›</span>
-              </button>
-              <button onClick={() => loadTemplate('2-day')} className="itin-btn itin-template-btn">
-                <span> Beijing & Xi&rsquo;an Classic</span><span style={{ color: '#B5271A' }}>›</span>
-              </button>
-            </div>
-
-            {/* Trip summary */}
-            <div className="summary-card">
-              <div className="summary-card-title"> Trip Summary</div>
-              <div className="summary-card-list">
-                <div> {days.length} day{days.length !== 1 ? 's' : ''}</div>
-                <div> {days.flatMap(d => d.items).length} attraction{days.flatMap(d => d.items).length !== 1 ? 's' : ''}</div>
-                <div> {[...new Set(days.map(d => d.city).filter(Boolean))].join(', ') || '—'}</div>
-              </div>
-            </div>
-
-            <div className="offline-note">
-               <strong>Offline Mode:</strong> Click ⬇ Offline above to download your itinerary as a JSON file. Open it on your phone anytime — no internet needed.
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* ── ATTRACTION PICKER MODAL ── */}
       {showAttrPicker !== null && (
-        <div
-          className="modal-overlay"
-          onClick={e => { if (e.target === e.currentTarget) { setShowAttrPicker(null); setAttrSearch('') } }}
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <span className="modal-title">Add to Day {showAttrPicker + 1}</span>
-              <button onClick={() => { setShowAttrPicker(null); setAttrSearch('') }} className="modal-close">×</button>
-            </div>
-            <div className="modal-search">
-              <input
-                autoFocus
-                value={attrSearch}
-                onChange={e => setAttrSearch(e.target.value)}
-                placeholder="Search attractions..."
-                className="modal-search-input"
-              />
-            </div>
-            <div className="modal-list">
-              {filteredAttractions.length === 0 ? (
-                <div className="picker-empty">No attractions found</div>
-              ) : filteredAttractions.map(a => (
-                <div
-                  key={a.attraction_id}
-                  onClick={() => addAttractionToDay(showAttrPicker, a)}
-                  className="picker-item"
-                >
-                  <div className="picker-item-img">
-                    <Image src={a.image_url || 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} alt={a.name_en} width={120} height={90} unoptimized onError={e => e.target.src = 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=120&q=70'} />
-                  </div>
-                  <div className="picker-item-info">
-                    <div className="picker-item-name">{a.name_en}</div>
-                    <div className="picker-item-sub">{a.name_zh} · {a.city?.name_en} · ¥{a.entrance_fee || 0}</div>
-                  </div>
-                  <span className="picker-item-add">+</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <AttractionPicker
+          dayNumber={showAttrPicker + 1}
+          attractions={attractions}
+          search={attrSearch}
+          onSearch={setAttrSearch}
+          onSelect={a => addAttractionToDay(showAttrPicker, a)}
+          onClose={() => { setShowAttrPicker(null); setAttrSearch('') }}
+        />
       )}
 
       {/* Toast */}
-      <div className={`toast ${toast ? 'show' : ''}`}>{toast}</div>
+      <div className={`fixed bottom-[28px] left-1/2 -translate-x-1/2 bg-ink text-white px-[22px] py-[11px] rounded-full text-[13px] font-medium transition-transform duration-300 z-[999] whitespace-nowrap ${toast ? 'translate-y-0' : 'translate-y-[80px]'}`}>{toast}</div>
     </div>
   )
 }

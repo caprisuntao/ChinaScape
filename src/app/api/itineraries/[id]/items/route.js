@@ -72,7 +72,6 @@ export async function PATCH(request, { params }) {
     .from('itinerary_item')
     .update(body)
     .eq('itinerary_id', params.id)
-    .eq('user_id', user.id)
     .select()
     .single()
 
@@ -89,7 +88,6 @@ export async function DELETE(request, { params }) {
     .from('itinerary_item')
     .delete()
     .eq('itinerary_id', params.id)
-    .eq('user_id', user.id)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ message: 'Deleted' })

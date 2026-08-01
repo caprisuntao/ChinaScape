@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function SearchBar() {
+export default function SearchBar({ fullWidth = false }) {
   const [term, setTerm] = useState('')
   const router = useRouter()
 
@@ -15,14 +15,20 @@ export default function SearchBar() {
   }
 
   return (
-    <form onSubmit={handleSearch} className="search-wrap">
-      <input 
-        type="text" 
-        placeholder="Search attractions..." 
+    <form
+      onSubmit={handleSearch}
+      className={`flex items-center bg-paper border border-paper-dkr rounded-full overflow-hidden h-9 ${fullWidth ? 'w-full' : ''}`}
+    >
+      <input
+        type="text"
+        placeholder="Search attractions..."
         value={term}
         onChange={(e) => setTerm(e.target.value)}
+        className={`border-0 outline-none bg-transparent px-3.5 text-[13px] text-ink placeholder:text-ink-xlt ${fullWidth ? 'w-full flex-1' : 'w-[200px]'}`}
       />
-      <button type="submit">Search</button>
+      <button type="submit" className="bg-red text-white border-0 px-4 h-9 text-[13px] font-medium cursor-pointer rounded-r-full shrink-0">
+        Search
+      </button>
     </form>
   )
 }

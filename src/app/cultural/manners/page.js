@@ -1,27 +1,27 @@
 import Link from 'next/link';
+import Reveal from '@/components/Reveal';
 
 export default function MannersPage() {
   return (
-    <div className="screen active">
-      {/* Navigation Top Bar */}
-      <div className="detail-bar">
-        <Link href="/cultural" className="detail-action">← Back to Cultural Guide</Link>
-        <div className="detail-bar-title">Etiquette Tips</div>
-      </div>
+    <>
+      {/* Hero band */}
+      <section className="bg-red">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-8 md:py-10">
+          <Link href="/cultural" className="text-[12px] text-white/70 hover:text-white transition-colors duration-200">← Back to Cultural Guide</Link>
+          <h1 className="font-display text-[26px] md:text-[32px] font-bold text-white mt-3">Etiquette Tips</h1>
+          <p className="mt-2 text-sm text-white/75">Customs, manners, and critical things to avoid when visiting China.</p>
+        </div>
+      </section>
 
       {/* Main Content Area */}
-      <div className="page-header">
-        <div style={{ marginBottom: '40px' }}>
-          <h1 className="page-heading">Etiquette Tips</h1>
-          <p className="page-subheading">Customs, manners, and critical things to avoid when visiting China.</p>
-        </div>
-
-        <div className="manners-stack">
+      <div className="max-w-[900px] mx-auto px-4 md:px-[32px] py-8 md:py-12">
+        <div className="flex flex-col gap-[28px]">
 
           {/* Section 1: Dining */}
-          <div className="manners-section">
-            <h2 className="manners-section-title">🥢 Dining & Table Manners</h2>
-            <ul className="manners-list">
+          <Reveal>
+          <div className="bg-paper rounded-card p-6 border border-paper-dkr border-l-[3px] border-l-red">
+            <h2 className="text-lg font-bold text-red mb-[14px]">Dining & Table Manners</h2>
+            <ul className="pl-5 flex flex-col gap-3 text-ink-md leading-[1.6]">
               <li>
                 <strong>The Chopstick Taboo:</strong> Never stick your chopsticks vertically down into a bowl of rice. This mimics incense sticks used at funerals and is considered a terrible omen associated with death.
               </li>
@@ -36,11 +36,13 @@ export default function MannersPage() {
               </li>
             </ul>
           </div>
+          </Reveal>
 
           {/* Section 2: Drinking & Banquets */}
-          <div className="manners-section">
-            <h2 className="manners-section-title">🍻 Toasting & Drinking Culture</h2>
-            <ul className="manners-list">
+          <Reveal delay={80}>
+          <div className="bg-paper rounded-card p-6 border border-paper-dkr border-l-[3px] border-l-red">
+            <h2 className="text-lg font-bold text-red mb-[14px]">Toasting & Drinking Culture</h2>
+            <ul className="pl-5 flex flex-col gap-3 text-ink-md leading-[1.6]">
               <li>
                 <strong>Humility in Clinking:</strong> When clinking glasses for a toast, try to ensure the rim of your glass is physically *lower* than the rim of your host&rsquo;s or elder&rsquo;s glass. This is a deeply respected sign of modesty.
               </li>
@@ -52,11 +54,13 @@ export default function MannersPage() {
               </li>
             </ul>
           </div>
+          </Reveal>
 
           {/* Section 3: Social Customs */}
-          <div className="manners-section">
-            <h2 className="manners-section-title">🤝 Social Interactions & &ldquo;Face&rdquo;</h2>
-            <ul className="manners-list">
+          <Reveal delay={160}>
+          <div className="bg-paper rounded-card p-6 border border-paper-dkr border-l-[3px] border-l-red">
+            <h2 className="text-lg font-bold text-red mb-[14px]">Social Interactions & &ldquo;Face&rdquo;</h2>
+            <ul className="pl-5 flex flex-col gap-3 text-ink-md leading-[1.6]">
               <li>
                 <strong>Understanding &ldquo;Mianzi&rdquo; (Face):</strong> Causing someone public embarrassment or aggressively arguing with service workers will cause them to &ldquo;lose face.&rdquo; Always resolve misunderstandings calmly and politely.
               </li>
@@ -71,11 +75,13 @@ export default function MannersPage() {
               </li>
             </ul>
           </div>
+          </Reveal>
 
           {/* Section 4: Public Spaces & Technology */}
-          <div className="manners-section">
-            <h2 className="manners-section-title">📱 Public Spaces & Digital Culture</h2>
-            <ul className="manners-list">
+          <Reveal delay={240}>
+          <div className="bg-paper rounded-card p-6 border border-paper-dkr border-l-[3px] border-l-red">
+            <h2 className="text-lg font-bold text-red mb-[14px]">Public Spaces & Digital Culture</h2>
+            <ul className="pl-5 flex flex-col gap-3 text-ink-md leading-[1.6]">
               <li>
                 <strong>Personal Space Expectations:</strong> China&rsquo;s cities are incredibly populous. In subway lines, train stations, and popular markets, pushing and bumping are common and not considered malicious. Don&rsquo;t take tight quarters or bustling crowds as personal offenses.
               </li>
@@ -87,11 +93,13 @@ export default function MannersPage() {
               </li>
             </ul>
           </div>
+          </Reveal>
 
           {/* Section 5: Absolute Taboos */}
-          <div className="manners-taboo">
-            <h2 className="manners-taboo-title">⚠️ What NOT to Do (Taboos)</h2>
-            <ul className="manners-list">
+          <Reveal delay={320}>
+          <div className="bg-gold-lt rounded-card p-6 border border-gold border-l-[3px] border-l-gold">
+            <h2 className="text-lg font-bold text-gold-dk mb-[14px]">What NOT to Do (Taboos)</h2>
+            <ul className="pl-5 flex flex-col gap-3 text-ink-md leading-[1.6]">
               <li>
                 <strong>Do Not Tip:</strong> Tipping is not expected or customary in mainland China. In casual restaurants or taxis, leaving extra money might confuse staff or lead them to chase you down to return it.
               </li>
@@ -106,9 +114,10 @@ export default function MannersPage() {
               </li>
             </ul>
           </div>
+          </Reveal>
 
         </div>
       </div>
-    </div>
+    </>
   );
 }
