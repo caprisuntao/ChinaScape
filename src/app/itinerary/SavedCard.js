@@ -29,28 +29,29 @@ export default function SavedCard({ itinerary, onLoad, onDelete }) {
       </div>
 
       {/* Content */}
-      <div className="px-4 py-[14px]">
-        <div className="font-display text-[15px] font-bold text-ink truncate">{itinerary.title}</div>
+      <div className="px-4 py-4">
+        <div className="font-display text-h3 font-bold text-ink truncate">{itinerary.title}</div>
         <div className="flex items-center gap-3 mt-1.5 text-[11px] text-ink-lt flex-wrap">
           <span>{itinerary.duration_days} day{itinerary.duration_days !== 1 ? 's' : ''}</span>
           <span>·</span>
           <span>{totalAttractions} stop{totalAttractions !== 1 ? 's' : ''}</span>
           {cities.length > 0 && (<><span>·</span><span>{cities.join(', ')}</span></>)}
         </div>
-        <div className="text-[10px] text-ink-xlt mt-1.5">
+        <div className="text-[11px] text-ink-lt mt-1.5">
           Saved {new Date(itinerary.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
         </div>
 
-        <div className="flex gap-2 mt-[14px]">
+        <div className="flex gap-2 mt-4">
           <button
             onClick={() => onLoad(itinerary)}
-            className="flex-1 bg-red text-white rounded-full py-2.5 text-xs font-semibold cursor-pointer border-0 hover:bg-red-dk transition-colors duration-200"
+            className="flex-1 bg-red text-white rounded-full py-2 text-xs font-semibold cursor-pointer border-0 hover:bg-red-dk transition-colors duration-200"
           >
             Load into Builder
           </button>
           <button
             onClick={() => onDelete(itinerary.itinerary_id)}
-            className="bg-transparent border border-paper-dkr rounded-full px-3.5 py-2.5 text-xs text-ink-lt cursor-pointer hover:border-red hover:text-red transition-colors duration-200"
+            aria-label={`Delete ${itinerary.title}`}
+            className="bg-transparent border border-paper-dkr rounded-full px-3.5 py-2 text-xs text-ink-lt cursor-pointer hover:border-red hover:text-red transition-colors duration-200"
           >
             Delete
           </button>

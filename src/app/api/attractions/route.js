@@ -39,6 +39,9 @@ export async function GET(request) {
   if (category) query = query.eq('category.name', category)
 
   const { data, error } = await query
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('Failed to fetch attractions:', error)
+    return NextResponse.json({ error: 'Failed to fetch attractions.' }, { status: 500 })
+  }
   return NextResponse.json({ data })
 }

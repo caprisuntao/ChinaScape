@@ -27,6 +27,9 @@ export async function GET(request, { params }) {
     .select('*, city(*), category(*)')
     .eq('attraction_id', id)
     .single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 404 })
+  if (error) {
+    console.error('Failed to fetch attraction:', error)
+    return NextResponse.json({ error: 'Attraction not found.' }, { status: 404 })
+  }
   return NextResponse.json({ data })
 }

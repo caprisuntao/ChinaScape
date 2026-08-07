@@ -39,6 +39,20 @@
   --font-display: 'Noto Serif SC', serif;
   --font-body: 'DM Sans', sans-serif;
 
+  /* Named type scale (utilities: text-display, text-hero, text-page-title, text-h2, text-h3) */
+  --text-display: 3.375rem;      /* 54px — home hero */
+  --text-display--line-height: 1.08;
+  --text-hero: 2.5rem;           /* 40px — page hero */
+  --text-hero--line-height: 1.15;
+  --text-page-title: 1.75rem;    /* 28px — page title, mobile hero */
+  --text-page-title--line-height: 1.2;
+  --text-h2: 1.5rem;             /* 24px */
+  --text-h2--line-height: 1.25;
+  --text-h3: 1.125rem;           /* 18px */
+  --text-h3--line-height: 1.4;
+  --text-caption: 0.75rem;       /* 12px */
+  --text-caption--line-height: 1.5;
+
   /* Radius */
   --radius-thumb: 7px;
   --radius-card: 12px;
@@ -76,6 +90,13 @@
     font-family: var(--font-body);
     background: var(--color-paper);
     color: var(--color-ink);
+  }
+
+  /* Visible keyboard focus everywhere. Elements that set `outline-none`
+     opt out deliberately and must add their own focus-visible ring. */
+  :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 2px solid var(--color-red);
+    outline-offset: 2px;
   }
 
   /* Respect users who prefer reduced motion */

@@ -24,12 +24,17 @@ export async function DELETE(request, { params }) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
 
+  const { id } = await params
+
   const { error } = await supabase
     .from('favourite')
     .delete()
-    .eq('favourite_id', params.id)
+    .eq('favourite_id', id)
     .eq('user_id', user.id)
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('Failed to delete favourite:', error)
+    return NextResponse.json({ error: 'Failed to delete favourite.' }, { status: 500 })
+  }
   return NextResponse.json({ message: 'Deleted' })
 }

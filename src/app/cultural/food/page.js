@@ -123,40 +123,40 @@ export default function FoodPage() {
     <>
       {/* Hero band */}
       <section className="bg-red">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-8 md:py-10">
-          <Link href="/cultural" className="text-[12px] text-white/70 hover:text-white transition-colors duration-200">← Back to Cultural Guide</Link>
-          <h1 className="font-display text-[26px] md:text-[32px] font-bold text-white mt-3">Must-Try Foods</h1>
-          <p className="mt-2 text-sm text-white/75">Local Chinese delicacies — from street stalls to legendary restaurants.</p>
+        <div className="max-w-[1200px] mx-auto px-4 md:px-12 py-12 md:py-14">
+          <Link href="/cultural" className="text-[12px] text-white/85 hover:text-white transition-colors duration-200">← Back to Cultural Guide</Link>
+          <h1 className="font-display text-page-title md:text-hero font-bold text-white mt-3">Must-Try Foods</h1>
+          <p className="mt-2 text-sm text-white/85">Local Chinese delicacies — from street stalls to legendary restaurants.</p>
         </div>
       </section>
 
       <div className="max-w-[900px] mx-auto px-4 md:px-[32px] py-8 md:py-12">
-        <div className="mb-[28px]">
+        <div className="mb-6">
           <input
-            autoFocus
             value={search}
             onChange={e => handleSearch(e.target.value)}
             placeholder="Search by dish name or city…"
-            className="w-full px-[18px] py-3.5 border border-paper-dkr rounded-full text-sm outline-none text-ink-md bg-white focus:border-red transition-colors"
+            aria-label="Search dishes"
+            className="w-full px-4 py-3 border border-paper-dkr rounded-full text-sm outline-none text-ink-md bg-white focus:border-red focus-visible:ring-2 focus-visible:ring-red/40 transition-colors"
           />
         </div>
 
         {currentItems.length === 0 ? (
-          <div className="text-center py-[60px] text-ink-lt text-sm">
+          <div className="text-center py-16 text-ink-lt text-sm">
             No dishes found matching &ldquo;{search}&rdquo;
           </div>
         ) : (
           <div className="flex flex-col gap-6">
             {currentItems.map((dish, i) => (
               <Reveal key={i} delay={Math.min(i, 5) * 60}>
-                <div className="bg-white rounded-card p-6 border border-paper-dkr transition-all duration-200 hover:border-red hover:shadow-card-sm">
-                  <div className="flex items-baseline gap-[10px] mb-2">
-                    <h2 className="text-lg font-bold text-red">{dish.name}</h2>
+                <div className="bg-white rounded-card p-6 border border-paper-dkr">
+                  <div className="flex items-baseline gap-2 mb-2 flex-wrap">
+                    <h2 className="text-xl font-bold text-red">{dish.name}</h2>
                     <span className="text-[15px] text-ink-lt font-display">{dish.name_zh}</span>
-                    <span className="text-[11px] bg-paper-dkr text-ink-md rounded-full px-[10px] py-[2px] ml-auto whitespace-nowrap">{dish.origin}</span>
+                    <span className="text-[11px] bg-paper-dkr text-ink-md rounded-full px-2.5 py-0.5 ml-auto whitespace-normal sm:whitespace-nowrap">{dish.origin}</span>
                   </div>
                   <p className="text-sm text-ink-md leading-[1.7] mb-3">{dish.description}</p>
-                  <div className="bg-paper rounded-card px-3.5 py-[10px] border-l-[3px] border-red text-[13px] text-ink-md leading-relaxed">
+                  <div className="bg-paper rounded-card px-4 py-3 border-l-[3px] border-red text-[13px] text-ink-md leading-relaxed">
                     <span className="font-semibold text-red">Where to try:</span>{' '}
                     {dish.mustTry}
                   </div>
@@ -168,11 +168,12 @@ export default function FoodPage() {
 
         {/* ── Pagination Controls ────────────────────────────────────────── */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-10">
+          <nav aria-label="Pagination" className="flex justify-center items-center gap-2 mt-10">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-4 py-2 rounded-md border border-paper-dkr bg-paper text-ink-md cursor-pointer text-sm font-semibold disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
+              aria-label="Previous page"
+              className="px-4 py-2 rounded-full border border-paper-dkr bg-white text-ink-md cursor-pointer text-sm font-semibold hover:border-red hover:text-red transition-colors disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
             >
               ← Prev
             </button>
@@ -183,7 +184,9 @@ export default function FoodPage() {
                 <button
                   key={pageNum}
                   onClick={() => handlePageChange(pageNum)}
-                  className={`w-9 h-9 rounded-md border cursor-pointer text-sm font-semibold flex items-center justify-center ${isActive ? 'bg-red text-white border-red' : 'bg-paper text-ink-md border-paper-dkr'}`}
+                  aria-label={`Go to page ${pageNum}`}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`w-9 h-9 rounded-full border cursor-pointer text-sm font-semibold flex items-center justify-center transition-colors ${isActive ? 'bg-red text-white border-red' : 'bg-white text-ink-md border-paper-dkr hover:border-red hover:text-red'}`}
                 >
                   {pageNum}
                 </button>
@@ -192,11 +195,12 @@ export default function FoodPage() {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 rounded-md border border-paper-dkr bg-paper text-ink-md cursor-pointer text-sm font-semibold disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
+              aria-label="Next page"
+              className="px-4 py-2 rounded-full border border-paper-dkr bg-white text-ink-md cursor-pointer text-sm font-semibold hover:border-red hover:text-red transition-colors disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
             >
               Next →
             </button>
-          </div>
+          </nav>
         )}
 
         <div className="mt-10 px-6 py-5 bg-gold-lt border border-gold rounded-card text-[13px] text-ink-md leading-[1.7] text-center">

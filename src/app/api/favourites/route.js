@@ -40,7 +40,10 @@ export async function GET() {
     .select('*, attraction(*)')
     .eq('user_id', user.id)
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('Failed to fetch favourites:', error)
+    return NextResponse.json({ error: 'Failed to fetch favourites.' }, { status: 500 })
+  }
   return NextResponse.json({ data })
 }
 
@@ -73,6 +76,9 @@ export async function POST(request) {
     .select()
     .single()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('Failed to save favourite:', error)
+    return NextResponse.json({ error: 'Failed to save favourite.' }, { status: 500 })
+  }
   return NextResponse.json({ data }, { status: 201 })
 }

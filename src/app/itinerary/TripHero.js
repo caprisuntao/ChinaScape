@@ -1,4 +1,5 @@
 'use client'
+import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 
 function StatPill({ label }) {
@@ -10,12 +11,18 @@ function StatPill({ label }) {
 }
 
 export default function TripHero({ title, editingTitle, setTitle, setEditingTitle, days, grandTotal, saving, onSave, onDownload, totalAttractions, uniqueCities }) {
+  // Last committed title, used to cancel edits with Escape
+  const committedTitleRef = useRef(title)
+  useEffect(() => {
+    if (!editingTitle) committedTitleRef.current = title
+  }, [editingTitle, title])
+
   return (
     <section className="bg-red">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-5 md:py-7">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-12 py-5 md:py-7">
         {/* Row 1: Back link + actions */}
         <div className="flex items-center justify-between mb-3">
-          <Link href="/" className="text-[12px] text-white/70 hover:text-white transition-colors duration-200">
+          <Link href="/" className="text-[12px] text-white/85 hover:text-white transition-colors duration-200">
             ← Back to Home
           </Link>
           <div className="flex gap-2">
@@ -30,7 +37,7 @@ export default function TripHero({ title, editingTitle, setTitle, setEditingTitl
             <button
               onClick={onSave}
               disabled={saving}
-              className="bg-white text-red rounded-full px-5 py-1.5 text-[12px] font-semibold hover:bg-gold-lt hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+              className="bg-white text-red rounded-full px-5 py-1.5 text-[12px] font-semibold hover:bg-gold hover:text-white hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             >
               {saving ? 'Saving…' : 'Save'}
             </button>
@@ -42,23 +49,34 @@ export default function TripHero({ title, editingTitle, setTitle, setEditingTitl
           <input
             autoFocus
             value={title}
+            aria-label="Itinerary title"
+            maxLength={100}
             onChange={e => setTitle(e.target.value)}
             onBlur={() => setEditingTitle(false)}
-            onKeyDown={e => (e.key === 'Enter' || e.key === 'Escape') && setEditingTitle(false)}
-            className="font-display text-[22px] md:text-[28px] font-bold text-white bg-white/10 border border-white/30 rounded-md px-3 py-1 outline-none mb-3 max-w-[500px]"
+            onKeyDown={e => {
+              if (e.key === 'Enter') setEditingTitle(false)
+              if (e.key === 'Escape') {
+                setTitle(committedTitleRef.current) // Escape cancels the edit
+                setEditingTitle(false)
+              }
+            }}
+            className="font-display text-[22px] md:text-[28px] font-bold text-white bg-white/10 border border-white/30 rounded-md px-3 py-1 outline-none mb-3 max-w-[500px] focus-visible:ring-2 focus-visible:ring-white/60"
           />
         ) : (
-          <h1
-            onClick={() => setEditingTitle(true)}
-            className="font-display text-[22px] md:text-[28px] font-bold text-white cursor-pointer mb-3 flex items-center gap-2 group w-fit"
-            title="Click to rename"
-          >
-            {title}
-            <span className="text-white/50 group-hover:text-white/80 transition-colors" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                <path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-              </svg>
-            </span>
+          <h1 className="mb-3 w-fit">
+            <button
+              onClick={() => setEditingTitle(true)}
+              aria-label="Rename itinerary"
+              title="Click to rename"
+              className="font-display text-[22px] md:text-[28px] font-bold text-white cursor-pointer flex items-center gap-2 group bg-transparent border-0 p-0"
+            >
+              {title}
+              <span className="text-white/60 group-hover:text-white/80 transition-colors" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                  <path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                </svg>
+              </span>
+            </button>
           </h1>
         )}
 

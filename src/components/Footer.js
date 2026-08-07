@@ -50,7 +50,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-ink text-white">
-      <div className="max-w-[1200px] mx-auto px-6 md:px-[60px] py-10 md:py-14 grid grid-cols-3 gap-x-4 gap-y-8 sm:gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
+      <div className="max-w-[1200px] mx-auto px-6 md:px-12 py-10 md:py-14 grid grid-cols-3 gap-x-4 gap-y-8 sm:gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
         {/* Brand */}
         <div className="col-span-3 sm:col-span-1">
           <Link href="/" className="inline-block font-display text-xl font-bold text-red">
@@ -80,7 +80,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="max-w-[1200px] mx-auto px-6 md:px-[60px] py-4 sm:py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="max-w-[1200px] mx-auto px-6 md:px-12 py-4 sm:py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-white/40">© {year} ChinaScape · Built for curious travelers</p>
           <div className="flex items-center gap-3">
             {socials.map(s => (

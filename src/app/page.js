@@ -87,14 +87,14 @@ export default function Home() {
       {/* ── HERO ── */}
       <section className="bg-red">
 
-        <div className="relative max-w-[1200px] mx-auto px-5 md:px-[60px] py-14 md:py-16 flex flex-col md:flex-row items-center gap-12 md:gap-[64px]">
+        <div className="relative max-w-[1200px] mx-auto px-5 md:px-12 py-14 md:py-16 flex flex-col md:flex-row items-center gap-12 md:gap-[64px]">
           {/* Text */}
           <div className="flex-1 text-white text-center md:text-left">
             <h1 className="font-display text-[36px] md:text-[54px] font-bold leading-[1.08] tracking-[-1.5px]">
               <span className="block animate-fade-up">Discover China,</span>
               <span className="block animate-fade-up text-gold-lt [animation-delay:140ms]">Your Way</span>
             </h1>
-            <p className="mt-5 text-[15px] md:text-base text-white/80 leading-relaxed max-w-[440px] mx-auto md:mx-0 animate-fade-up [animation-delay:280ms]">
+            <p className="mt-5 text-[15px] md:text-base text-white/85 leading-relaxed max-w-[440px] mx-auto md:mx-0 animate-fade-up [animation-delay:280ms]">
               From the Great Wall to misty karst mountains — plan your perfect journey through China&rsquo;s most iconic destinations.
             </p>
 
@@ -140,7 +140,7 @@ export default function Home() {
       </section>
 
       {/* ── CONTENT ── */}
-      <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-8 md:py-12">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-12 py-8 md:py-12">
 
         {/* Quick links */}
         <Reveal>
@@ -221,7 +221,7 @@ export default function Home() {
           {/* Featured grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {loading ? (
-              <p className="text-ink-lt">Loading attractions...</p>
+              <p role="status" aria-live="polite" className="text-ink-lt">Loading attractions...</p>
             ) : featured.length === 0 ? (
               <p className="text-ink-lt">No attractions found.</p>
             ) : (
@@ -271,10 +271,10 @@ export default function Home() {
 
       {/* ── CTA BANNER ── */}
       <section className="bg-red">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-12 md:py-16 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-12 py-12 md:py-16 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
           <div>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-white">Ready to plan your trip?</h2>
-            <p className="mt-2 text-sm md:text-base text-white/75">Build a day-by-day itinerary or explore our cultural guides.</p>
+            <p className="mt-2 text-sm md:text-base text-white/85">Build a day-by-day itinerary or explore our cultural guides.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             <Link href="/itinerary" className="inline-flex items-center bg-white text-red font-semibold rounded-full px-7 py-3.5 text-sm shadow-lg hover:bg-gold-lt hover:-translate-y-0.5 transition-all duration-300">

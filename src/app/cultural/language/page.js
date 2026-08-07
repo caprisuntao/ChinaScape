@@ -78,10 +78,10 @@ export default function LanguagePage() {
     <>
       {/* Hero band */}
       <section className="bg-red">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-8 md:py-10">
-          <Link href="/cultural" className="text-[12px] text-white/70 hover:text-white transition-colors duration-200">← Back to Cultural Guide</Link>
-          <h1 className="font-display text-[26px] md:text-[32px] font-bold text-white mt-3">Language Flashcards</h1>
-          <p className="mt-2 text-sm text-white/75">Common Mandarin phrases for everyday travel use — click a card to reveal the translation.</p>
+        <div className="max-w-[1200px] mx-auto px-4 md:px-12 py-12 md:py-14">
+          <Link href="/cultural" className="text-[12px] text-white/85 hover:text-white transition-colors duration-200">← Back to Cultural Guide</Link>
+          <h1 className="font-display text-page-title md:text-hero font-bold text-white mt-3">Language Flashcards</h1>
+          <p className="mt-2 text-sm text-white/85">Common Mandarin phrases for everyday travel use — click a card to reveal the translation.</p>
         </div>
       </section>
 
@@ -91,20 +91,23 @@ export default function LanguagePage() {
             const isFlipped = flippedCards[phrase.id];
             return (
               <Reveal key={phrase.id} delay={Math.min(i, 8) * 40}>
-                <div
+                <button
                   onClick={() => toggleCard(phrase.id)}
-                  className={`rounded-card px-5 py-[30px] min-h-[160px] flex flex-col justify-center items-center text-center cursor-pointer transition-all duration-300 shadow-subtle relative hover:-translate-y-[3px] hover:shadow-card-sm ${isFlipped ? 'bg-red border-red text-white' : 'bg-white border border-paper-dkr text-ink-md'}`}
+                  aria-pressed={isFlipped}
+                  className={`w-full rounded-card px-5 py-8 min-h-[160px] flex flex-col justify-center items-center text-center cursor-pointer transition-all duration-300 shadow-subtle relative hover:-translate-y-[3px] hover:shadow-card-sm ${isFlipped ? 'bg-red border-red text-white' : 'bg-white border border-paper-dkr text-ink-md'}`}
                 >
-                  <div className="absolute top-3 left-3 text-[11px] font-semibold uppercase tracking-[0.05em] opacity-60">{phrase.category}</div>
-                  {isFlipped ? (
-                    <div className="fade-in">
-                      <div className="text-[32px] font-display font-bold mb-2">{phrase.zh}</div>
-                      <div className="text-base opacity-90">{phrase.pinyin}</div>
-                    </div>
-                  ) : (
-                    <div className="text-lg font-semibold fade-in">{phrase.en}</div>
-                  )}
-                </div>
+                  <div className={`absolute top-3 left-3 text-[11px] font-semibold uppercase tracking-[0.05em] ${isFlipped ? 'text-white/90' : 'text-ink-lt'}`}>{phrase.category}</div>
+                  <div aria-live="polite">
+                    {isFlipped ? (
+                      <div className="fade-in">
+                        <div className="text-[32px] font-display font-bold mb-2">{phrase.zh}</div>
+                        <div className="text-base opacity-90">{phrase.pinyin}</div>
+                      </div>
+                    ) : (
+                      <div className="text-lg font-semibold fade-in">{phrase.en}</div>
+                    )}
+                  </div>
+                </button>
               </Reveal>
             );
           })}
@@ -112,11 +115,12 @@ export default function LanguagePage() {
 
         {/* --- Pagination UI Controls --- */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-10">
+          <nav aria-label="Pagination" className="flex justify-center items-center gap-2 mt-10">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-4 py-2 rounded-md border border-paper-dkr bg-paper text-ink-md cursor-pointer text-sm font-semibold disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
+              aria-label="Previous page"
+              className="px-4 py-2 rounded-full border border-paper-dkr bg-white text-ink-md cursor-pointer text-sm font-semibold hover:border-red hover:text-red transition-colors disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
             >
               ← Prev
             </button>
@@ -127,7 +131,9 @@ export default function LanguagePage() {
                 <button
                   key={pageNum}
                   onClick={() => handlePageChange(pageNum)}
-                  className={`w-9 h-9 rounded-md border cursor-pointer text-sm font-semibold flex items-center justify-center ${isActive ? 'bg-red text-white border-red' : 'bg-paper text-ink-md border-paper-dkr'}`}
+                  aria-label={`Go to page ${pageNum}`}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`w-9 h-9 rounded-full border cursor-pointer text-sm font-semibold flex items-center justify-center transition-colors ${isActive ? 'bg-red text-white border-red' : 'bg-white text-ink-md border-paper-dkr hover:border-red hover:text-red'}`}
                 >
                   {pageNum}
                 </button>
@@ -136,11 +142,12 @@ export default function LanguagePage() {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 rounded-md border border-paper-dkr bg-paper text-ink-md cursor-pointer text-sm font-semibold disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
+              aria-label="Next page"
+              className="px-4 py-2 rounded-full border border-paper-dkr bg-white text-ink-md cursor-pointer text-sm font-semibold hover:border-red hover:text-red transition-colors disabled:bg-disabled-bg disabled:text-disabled-text disabled:cursor-not-allowed"
             >
               Next →
             </button>
-          </div>
+          </nav>
         )}
       </div>
     </>

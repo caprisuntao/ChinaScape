@@ -17,14 +17,16 @@ export default function SearchBar({ fullWidth = false }) {
   return (
     <form
       onSubmit={handleSearch}
+      role="search"
       className={`flex items-center bg-paper border border-paper-dkr rounded-full overflow-hidden h-9 ${fullWidth ? 'w-full' : ''}`}
     >
       <input
         type="text"
         placeholder="Search attractions..."
+        aria-label="Search attractions"
         value={term}
         onChange={(e) => setTerm(e.target.value)}
-        className={`border-0 outline-none bg-transparent px-3.5 text-[13px] text-ink placeholder:text-ink-xlt ${fullWidth ? 'w-full flex-1' : 'w-[200px]'}`}
+        className={`border-0 outline-none bg-transparent px-3.5 text-[13px] text-ink placeholder:text-ink-xlt focus-visible:ring-2 focus-visible:ring-red/40 ${fullWidth ? 'w-full flex-1' : 'w-[200px]'}`}
       />
       <button type="submit" className="bg-red text-white border-0 px-4 h-9 text-[13px] font-medium cursor-pointer rounded-r-full shrink-0">
         Search

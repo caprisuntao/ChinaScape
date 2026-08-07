@@ -6,7 +6,9 @@ export async function GET(request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
   // if "next" is in param, use it; otherwise default to home
-  const next = searchParams.get('next') ?? '/'
+  let next = searchParams.get('next') ?? '/'
+  // Open-redirect guard: only allow same-origin relative paths
+  if (!next.startsWith('/') || next.startsWith('//')) next = '/'
 
   if (code) {
     const cookieStore = await cookies() // Added await for Next.js 15

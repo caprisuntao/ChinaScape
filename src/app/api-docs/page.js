@@ -17,16 +17,16 @@ export default function ApiDocs() {
     <>
       {/* Hero band */}
       <section className="bg-red">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-8 md:py-10">
-          <Link href="/" className="text-[12px] text-white/70 hover:text-white transition-colors duration-200">← Back to Home</Link>
-          <h1 className="font-display text-[26px] md:text-[32px] font-bold text-white mt-3">API Documentation</h1>
-          <p className="mt-2 text-sm text-white/75">Explore the ChinaScape API — endpoints, parameters, and examples.</p>
+        <div className="max-w-[1200px] mx-auto px-4 md:px-12 py-12 md:py-14">
+          <Link href="/" className="text-[12px] text-white/85 hover:text-white transition-colors duration-200">← Back to Home</Link>
+          <h1 className="font-display text-page-title md:text-hero font-bold text-white mt-3">API Documentation</h1>
+          <p className="mt-2 text-sm text-white/85">Explore the ChinaScape API — endpoints, parameters, and examples.</p>
         </div>
       </section>
 
-      <div className="max-w-[1200px] mx-auto px-4 md:px-[60px] py-8">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-12 py-8">
         {!spec ? (
-          <div className="text-center py-[60px] text-ink-lt">Loading API docs...</div>
+          <div role="status" className="text-center py-16 text-ink-lt">Loading API docs...</div>
         ) : (
           <SwaggerUI spec={spec} />
         )}

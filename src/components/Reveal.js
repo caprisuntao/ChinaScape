@@ -8,12 +8,15 @@ import { useEffect, useRef, useState } from 'react'
  */
 export default function Reveal({ children, delay = 0, className = '' }) {
   const ref = useRef(null)
+  // Hidden until first scrolled into view. The IntersectionObserver fallback
+  // lives in an effect (not initial state) so SSR and client render the same.
   const [inView, setInView] = useState(false)
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
     if (typeof IntersectionObserver === 'undefined') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInView(true)
       return
     }

@@ -44,7 +44,10 @@ export async function GET() {
     .select('*, itinerary_item(*, attraction(*))')
     .eq('user_id', user.id)
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('Failed to fetch itineraries:', error)
+    return NextResponse.json({ error: 'Failed to fetch itineraries.' }, { status: 500 })
+  }
   return NextResponse.json({ data })
 }
 
@@ -60,12 +63,21 @@ export async function POST(request) {
     return NextResponse.json({ error: validationError.error }, { status: validationError.status })
   }
 
+  // Whitelist fields — user_id is always set from the session, never the body
   const { data, error } = await supabase
     .from('itinerary')
-    .insert({ ...body, user_id: user.id })
+    .insert({
+      title: body.title,
+      duration_days: body.duration_days,
+      metadata: body.metadata ?? null,
+      user_id: user.id
+    })
     .select()
     .single()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('Failed to create itinerary:', error)
+    return NextResponse.json({ error: 'Failed to create itinerary.' }, { status: 500 })
+  }
   return NextResponse.json({ data }, { status: 201 })
 }
